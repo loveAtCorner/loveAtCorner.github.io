@@ -1,12 +1,11 @@
-
 ## 博客搭建
 
 采用了新的基于go语言的博客框架`Hugo`来搭建我的个人博客
 
 下面是一些参考文档：
 
-* [Hugo官网](gohugo.io)
-* [Hugo中文文档](gohugo.org)
+* [Hugo官网](https://gohugo.io/)
+* [Hugo中文文档](https://www.gohugo.org/)
 * [使用 Hugo 和 GitHub Pages 搭建静态博客](https://waynerv.com/posts/setup-blog-with-hugo-and-github-pages/)
 
 ### 环境配置
