@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="YuTian Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="/img/2024-06-23-introducing-the-ner-technology/fushishan.jpg">
+    <meta property="twitter:image" content="/img/2024-06-23-introducing-the-ner-technology/fushishan.jpg" />
+    
+
+    
+    <meta name="title" content="实体命名识别技术介绍" />
+    <meta property="og:title" content="实体命名识别技术介绍" />
+    <meta property="twitter:title" content="实体命名识别技术介绍" />
+    
+
+    
+    <meta name="description" content="介绍Ner任务和实现的主流技术">
+    <meta property="og:description" content="介绍Ner任务和实现的主流技术" />
+    <meta property="twitter:description" content="介绍Ner任务和实现的主流技术" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="虞天, zhaohuabing, Zhaohuabing, , 虞天的网络日志, 虞天的博客, YuTian Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>实体命名识别技术介绍 | 虞天的博客 | YuTian Blog</title>
+
+    <link rel="canonical" href="/2024/06/23/introducing-the-ner-technology/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">YuTian Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes//">NOTES</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/2024-06-23-introducing-the-ner-technology/fushishan.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/ner" title="ner">
+                            ner
+                        </a>
+                        
+                    </div>
+                    <h1>实体命名识别技术介绍</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;虞天&#34;
+                             
+                            on 
+                            Sunday, June 23, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="ner案例">NER案例</h1>
+<h3 id="例子命名实体识别ner">例子：命名实体识别（NER）</h3>
+<p>假设我们有如下句子：</p>
+<pre tabindex="0"><code>&#34;John lives in New York.&#34;
+</code></pre><p>目标是识别出句子中的命名实体，并将其标注为对应的标签。对于这个例子，我们使用 B-LOC 表示位置实体的开始，I-LOC 表示位置实体的内部，B-PER 表示人名实体的开始，O 表示其他。</p>
+<h3 id="步骤">步骤</h3>
+<ol>
+<li><strong>输入序列</strong>：</li>
+</ol>
+<pre tabindex="0"><code>&#34;John lives in New York.&#34;
+</code></pre><ol start="2">
+<li><strong>真实标签序列</strong>：</li>
+</ol>
+<pre tabindex="0"><code>B-PER O O B-LOC I-LOC
+</code></pre><h3 id="lstmcrf-模型">LSTM+CRF 模型</h3>
+<ol>
+<li>
+<p><strong>LSTM 层</strong>：</p>
+<ul>
+<li>首先，将输入句子转化为词向量。</li>
+<li>这些词向量输入到 LSTM 层，生成每个时间步的特征表示。</li>
+</ul>
+<p>假设词向量维度为 100，LSTM 层输出的每个时间步的特征表示维度为 200（双向 LSTM）。</p>
+<p>LSTM 层输出：</p>
+</li>
+</ol>
+<pre tabindex="0"><code>[h_1, h_2, h_3, h_4, h_5]
+</code></pre><p>其中，(h_i) 是第 (i) 个词的特征表示。</p>
+<ol start="2">
+<li>
+<p><strong>CRF 层</strong>：</p>
+<ul>
+<li>LSTM 输出的特征表示输入到 CRF 层。</li>
+<li>CRF 层计算每个可能标签序列的分数。</li>
+</ul>
+<p>假设对于每个词，CRF 层输出的标签得分矩阵为：</p>
+</li>
+</ol>
+<pre tabindex="0"><code>h_1: [3, 2, 1, 0]  (对应标签：B-PER, B-LOC, I-LOC, O)
+h_2: [1, 3, 2, 4]
+h_3: [2, 1, 4, 3]
+h_4: [2, 3, 0, 1]
+h_5: [1, 3, 4, 2]
+</code></pre><ol start="3">
+<li><strong>计算对数似然</strong>：
+<ul>
+<li>模型为真实标签序列 (Y = [B-PER, O, O, B-LOC, I-LOC]) 计算分数：</li>
+</ul>
+</li>
+</ol>
+<pre tabindex="0"><code>s(X, Y) = 3 + 4 + 3 + 3 + 4 = 17
+</code></pre><ul>
+<li>
+<p>计算所有可能标签序列的分数总和：</p>
+<p>假设所有可能标签序列的分数总和为 1000。</p>
+</li>
+<li>
+<p>对数似然：</p>
+</li>
+</ul>
+<pre tabindex="0"><code>\text{log-likelihood}(X, Y) = 17 - \log 1000
+</code></pre><h3 id="训练目标">训练目标</h3>
+<p>在训练过程中，我们通过最大化上述对数似然来调整模型参数，使得真实标签序列的得分尽可能高，相对其他所有可能标签序列的分数总和尽可能大。</p>
+<h3 id="总结">总结</h3>
+<p>通过这个例子，我们看到 LSTM+CRF 模型如何处理输入序列并计算输出标签的分数。通过最大化对数似然，我们希望模型能够更准确地预测输入序列的真实标签。在实际训练中，这个过程会通过多次迭代和参数优化来实现。</p>
+<h1 id="主流技术方案">主流技术方案</h1>
+<h2 id="小型神经网络模型">小型神经网络模型</h2>
+<h3 id="1-rnnlstm--crf">1. RNN/LSTM + CRF</h3>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>
+<p><strong>数据预处理</strong>：</p>
+<ul>
+<li>标注数据集（如 CoNLL-2003）。</li>
+<li>将文本转换为词向量（可以使用预训练的词向量，如 Word2Vec 或 GloVe）。</li>
+</ul>
+</li>
+<li>
+<p><strong>模型构建</strong>：</p>
+<ul>
+<li>构建 RNN/LSTM 层，用于捕捉句子中的上下文信息。</li>
+<li>在 RNN/LSTM 层之后添加一个全连接层，将输出映射到标注空间。</li>
+<li>使用 CRF 层进行标注解码，以考虑标注之间的依赖关系。</li>
+</ul>
+</li>
+<li>
+<p><strong>模型训练</strong>：</p>
+<ul>
+<li>使用训练集训练模型，优化目标是最大化条件随机场的对数似然。</li>
+</ul>
+</li>
+<li>
+<p><strong>模型评估</strong>：</p>
+<ul>
+<li>使用测试集评估模型的性能，计算准确率、召回率和 F1 分数。</li>
+</ul>
+</li>
+</ol>
+<p><strong>代码示例（基于 PyTorch）：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> torch.nn <span style="color:#ff79c6">as</span> nn
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> torchcrf <span style="color:#ff79c6">import</span> CRF
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">LSTM_CRF</span>(nn<span style="color:#ff79c6">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> __init__(self, vocab_size, tagset_size, embedding_dim, hidden_dim):
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span>(LSTM_CRF, self)<span style="color:#ff79c6">.</span>__init__()
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>embedding <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Embedding(vocab_size, embedding_dim)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>lstm <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>LSTM(embedding_dim, hidden_dim <span style="color:#ff79c6">//</span> <span style="color:#bd93f9">2</span>, num_layers<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>, bidirectional<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>hidden2tag <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Linear(hidden_dim, tagset_size)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>crf <span style="color:#ff79c6">=</span> CRF(tagset_size)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">forward</span>(self, sentence):
+</span></span><span style="display:flex;"><span>        embeds <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>embedding(sentence)
+</span></span><span style="display:flex;"><span>        lstm_out, _ <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>lstm(embeds)
+</span></span><span style="display:flex;"><span>        tag_space <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>hidden2tag(lstm_out)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> tag_space
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">loss</span>(self, sentence, tags):
+</span></span><span style="display:flex;"><span>        emissions <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>forward(sentence)
+</span></span><span style="display:flex;"><span>        loss <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span>self<span style="color:#ff79c6">.</span>crf(emissions, tags)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> loss
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">decode</span>(self, sentence):
+</span></span><span style="display:flex;"><span>        emissions <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>forward(sentence)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> self<span style="color:#ff79c6">.</span>crf<span style="color:#ff79c6">.</span>decode(emissions)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 初始化模型、损失函数和优化器</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> LSTM_CRF(vocab_size, tagset_size, embedding_dim, hidden_dim)
+</span></span><span style="display:flex;"><span>optimizer <span style="color:#ff79c6">=</span> torch<span style="color:#ff79c6">.</span>optim<span style="color:#ff79c6">.</span>Adam(model<span style="color:#ff79c6">.</span>parameters(), lr<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0.01</span>)
+</span></span></code></pre></div><h2 id="预训练模型">预训练模型</h2>
+<p>BERT（Bidirectional Encoder Representations from Transformers）属于预训练模型。BERT 是由 Google 提出的，它采用了 Transformer 架构，通过在大规模语料库上进行无监督的预训练，然后在特定任务上进行微调，从而在多种自然语言处理任务中取得了卓越的表现。</p>
+<p>BERT 的预训练过程包括两个主要步骤：</p>
+<ol>
+<li>
+<p><strong>掩码语言模型（Masked Language Model, MLM）</strong>：在预训练过程中，BERT 会随机遮掩输入文本中的一些词，然后训练模型根据上下文来预测这些被遮掩的词。这使得 BERT 能够捕捉到双向的上下文信息。</p>
+</li>
+<li>
+<p><strong>下一句预测（Next Sentence Prediction, NSP）</strong>：在预训练过程中，BERT 还通过给定两句话并预测第二句话是否是紧跟第一句话的连续句子，来学习句子级别的关系。</p>
+</li>
+</ol>
+<p>经过上述预训练后，BERT 可以在各种下游任务（如文本分类、问答系统、命名实体识别等）中通过微调（即在小规模标注数据上进行有监督训练）来适应特定任务的需求。这种预训练-微调的方式使得 BERT 在很多自然语言处理任务中都表现出色。</p>
+<h3 id="1-bert--crf">1. BERT + CRF</h3>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>
+<p><strong>数据预处理</strong>：</p>
+<ul>
+<li>同样，使用标注数据集。</li>
+<li>将文本转换为 BERT 输入格式（使用 BERT 的 tokenizer）。</li>
+</ul>
+</li>
+<li>
+<p><strong>模型构建</strong>：</p>
+<ul>
+<li>使用预训练的 BERT 模型，将其输出作为特征向量。</li>
+<li>在 BERT 输出之后添加一个 CRF 层，用于标注解码。</li>
+</ul>
+</li>
+<li>
+<p><strong>模型训练</strong>：</p>
+<ul>
+<li>使用训练集训练模型，优化目标是最大化条件随机场的对数似然。</li>
+</ul>
+</li>
+<li>
+<p><strong>模型评估</strong>：</p>
+<ul>
+<li>使用测试集评估模型性能。</li>
+</ul>
+</li>
+</ol>
+<p><strong>代码示例（基于 Hugging Face Transformers）：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> transformers <span style="color:#ff79c6">import</span> BertTokenizer, BertModel
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> torchcrf <span style="color:#ff79c6">import</span> CRF
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">BERT_CRF</span>(nn<span style="color:#ff79c6">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> __init__(self, bert_model_name, tagset_size):
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span>(BERT_CRF, self)<span style="color:#ff79c6">.</span>__init__()
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>bert <span style="color:#ff79c6">=</span> BertModel<span style="color:#ff79c6">.</span>from_pretrained(bert_model_name)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>hidden2tag <span style="color:#ff79c6">=</span> nn<span style="color:#ff79c6">.</span>Linear(self<span style="color:#ff79c6">.</span>bert<span style="color:#ff79c6">.</span>config<span style="color:#ff79c6">.</span>hidden_size, tagset_size)
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>crf <span style="color:#ff79c6">=</span> CRF(tagset_size)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">forward</span>(self, input_ids, attention_mask):
+</span></span><span style="display:flex;"><span>        outputs <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>bert(input_ids, attention_mask<span style="color:#ff79c6">=</span>attention_mask)
+</span></span><span style="display:flex;"><span>        sequence_output <span style="color:#ff79c6">=</span> outputs[<span style="color:#bd93f9">0</span>]
+</span></span><span style="display:flex;"><span>        tag_space <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>hidden2tag(sequence_output)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> tag_space
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">loss</span>(self, input_ids, attention_mask, tags):
+</span></span><span style="display:flex;"><span>        emissions <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>forward(input_ids, attention_mask)
+</span></span><span style="display:flex;"><span>        loss <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">-</span>self<span style="color:#ff79c6">.</span>crf(emissions, tags, mask<span style="color:#ff79c6">=</span>attention_mask)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> loss
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">decode</span>(self, input_ids, attention_mask):
+</span></span><span style="display:flex;"><span>        emissions <span style="color:#ff79c6">=</span> self<span style="color:#ff79c6">.</span>forward(input_ids, attention_mask)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> self<span style="color:#ff79c6">.</span>crf<span style="color:#ff79c6">.</span>decode(emissions, mask<span style="color:#ff79c6">=</span>attention_mask)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 初始化模型、损失函数和优化器</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> BERT_CRF(<span style="color:#f1fa8c">&#39;bert-base-uncased&#39;</span>, tagset_size)
+</span></span><span style="display:flex;"><span>optimizer <span style="color:#ff79c6">=</span> torch<span style="color:#ff79c6">.</span>optim<span style="color:#ff79c6">.</span>Adam(model<span style="color:#ff79c6">.</span>parameters(), lr<span style="color:#ff79c6">=</span><span style="color:#bd93f9">3e-5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 使用BERT的tokenizer</span>
+</span></span><span style="display:flex;"><span>tokenizer <span style="color:#ff79c6">=</span> BertTokenizer<span style="color:#ff79c6">.</span>from_pretrained(<span style="color:#f1fa8c">&#39;bert-base-uncased&#39;</span>)
+</span></span></code></pre></div><h3 id="参考文献">参考文献</h3>
+<ul>
+<li><a href="https://pytorch-crf.readthedocs.io/en/stable/">PyTorch CRF</a></li>
+<li><a href="https://huggingface.co/transformers/">Hugging Face Transformers</a></li>
+</ul>
+<p>这些步骤和代码示例提供了一个基本框架，具体实现时需要根据数据集和实际需求进行调整和优化。</p>
+<h1 id="uie通用信息抽取方案">UIE（通用信息抽取）方案</h1>
+<p>信息提取（IE）旨在从非结构化文本中识别和构造用户指定的信息（Andersen et al.，1992；Grishman，2019）。IE任务因其不同的任务（实体（entity）、关系（relation）、事件（event）、情感（sentiment）等）、异构结构（片段（span）、三元组（triplets）、记录（records）等）和特定于需求的模式而高度多样化（Grishman和Sundheim，1996；Mitchell等人，2005；Ji和Grishman，2011）。</p>
+<p><a href="https://arxiv.org/abs/2203.12277">Unified Structure Generation for Universal Information Extraction</a>
+23 Mar 2022</p>
+<p>提出概念</p>
+<p>目前，大多数IE方法都是面向<strong>特定任务</strong>的，这导致了针对不同IE任务的专用体系结构、独立模型和专用知识源。这些任务专用解决方案极大地阻碍了IE系统的快速体系结构开发、有效的知识共享和快速跨领域适应。首先，为大量IE任务/设置/场景开发专用架构非常复杂。其次，学习孤立模型严重限制了相关任务和环境之间的知识共享。最后，构建专门用于不同IE任务的数据集和知识源既昂贵又耗时。因此，开发一个通用IE体系结构将非常有益，该体系结构可以统一建模不同的IE任务，自适应预测异构结构，并有效地学习各种资源，论文称之为<strong>Universal IE</strong>。</p>
+<p>
+  <img src="/img/2024-06-23-introducing-the-ner-technology/UIE-framework.png" alt="UIE-framework">
+
+</p>
+<p>这张图片展示了一个名为UIE（Unified Information Extraction）的框架，其整体结构如图所示。UIE通过使用结构化模式指导（Structural Schema Instructor，简称SSI）和结构化抽取语言（Structured Extraction Language，简称SEL）来进行信息抽取。</p>
+<ol>
+<li>
+<p><strong>Structural Schema Instructor (SSI)</strong>：</p>
+<ul>
+<li>SSI用于定义不同的结构化模式，用以从文本中抽取信息。</li>
+<li>图中展示了三种不同的结构化模式：
+<ul>
+<li>第一种模式：[spot] person [asso] work for [text]，例如“Steve became CEO of Apple in 1997.”，这里的[spot]、[asso]、[text]分别代表要抽取的人、关系和文本信息。</li>
+<li>第二种模式：[spot] start-position … [asso] employee …[text]，同样的文本句子，被识别为“Steve became CEO of Apple in 1997.”，以不同的方式组织。</li>
+<li>第三种模式：[spot] person [spot] organization [spot] time [text]，同样的句子，被识别为“Steve became CEO of Apple in 1997.”，组织更为详细。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Unified Information Extraction (UIE)</strong>：</p>
+<ul>
+<li>UIE接受SSI和文本作为输入，生成结构化的抽取语言（SEL）。</li>
+<li>不同的SSI模式指导UIE从文本中提取相应的信息，并生成对应的SEL。</li>
+</ul>
+</li>
+<li>
+<p><strong>Structured Extraction Language (SEL)</strong>：</p>
+<ul>
+<li>图右侧展示了不同的SEL格式：
+<ul>
+<li>第一种模式生成的SEL：((person: Steve) (work for: Apple))</li>
+<li>第二种模式生成的SEL：((start position: became) (employee: Steve) (employer: Apple) …)</li>
+<li>第三种模式生成的SEL：((person: Steve) (organization: Apple) (time: 1997))</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><a href="https://paperswithcode.com/paper/instructuie-multi-task-instruction-tuning-for">InstructUIE: Multi-task Instruction Tuning for Unified Information Extraction</a>
+17 Apr 2023</p>
+<p>该论文提出了一个名为InstructUIE的任务元信息框架，用于指导预训练语言模型在命名实体识别、关系提取和事件抽取等信息抽取任务中的表现。该框架包括两个主要部分：任务规范和辅助任务。其中，任务规范将每个任务实例格式化为四个属性：任务指令、选项、文本和输出。</p>
+<ul>
+<li>任务指令提供了详细的指南，说明如何从输入文本中提取相关信息并产生所需的输出结构。</li>
+<li>选项是给定输入的可能输出标签约束，它们提供了映射预测输出到相应语义概念的信息。</li>
+<li>文本是任务实例的输入句子，它与任务指令和选项一起馈入预训练语言模型，以生成所需的任务输出序列。</li>
+<li>输出是从原始标记转换而来的样本句子。
+<ul>
+<li>对于命名实体识别任务，输出格式为“实体标签：实体范围”。</li>
+<li>对于关系提取任务，输出格式为“关系类型：头实体，尾实体”。</li>
+<li>对于事件抽取任务，输出格式为“事件标签：触发词，参数标签：参数范围”。</li>
+</ul>
+</li>
+</ul>
+<p>取得成果</p>
+<ol>
+<li>取得了和BERT监督学习可比较的一个效果。</li>
+<li>在zero-shot的能力上取得了sota，比gpt3.5sota也好得多。</li>
+<li>利用一个multi-task模型可以解决大量的任务</li>
+</ol>
+<h2 id="uie开源模型">UIE开源模型</h2>
+<h3 id="paddlepaddleuie-base">PaddlePaddle/uie-base</h3>
+<p><a href="https://huggingface.co/PaddlePaddle/uie-base">开源模型uie-base</a></p>
+<p>PaddlePaddle/uie-base 模型旨在解决各种信息抽取（IE）任务。它采用统一的文本到结构生成框架，能够处理不同的抽取结构，并通过基于架构的提示机制自适应地生成目标抽取。该模型基于 ERNIE 3.0 预训练语言模型，并在大量信息抽取数据上进行了微调。它支持广泛的任务，包括实体、关系、事件和情感抽取，并在多个数据集和设置（包括有监督、低资源和少样本场景）中实现了最新的性能</p>
+<p>API文档</p>
+<ul>
+<li><a href="https://paddlenlp.readthedocs.io/en/latest/model_zoo/taskflow.html#id27">信息抽取(实体抽取 关系抽取　事件抽取 )</a></li>
+<li><a href="https://paddlenlp.readthedocs.io/en/latest/model_zoo/taskflow.html#id34">模型选择</a></li>
+<li><a href="https://paddlenlp.readthedocs.io/en/latest/model_zoo/taskflow.html#id35">定制训练</a></li>
+</ul>
+<h3 id="zwkinstructuie">ZWK/InstructUIE</h3>
+<p><a href="https://huggingface.co/ZWK/InstructUIE">开源模型InstructUIE</a></p>
+<p>InstructUIE 是另一种信息抽取模型，专注于基于指令的信息抽取。它使用自然语言指令来引导抽取过程，使其能够在不需要任务特定微调的情况下处理各种任务。该模型旨在通过理解和遵循类人指令来处理复杂的抽取场景，从而显著提高其在现实应用中的适应性和有效性。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://loveatcorner.github.io/"><img src="/img/favicon.png" />YuTian Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/11/03/hello-world/" data-toggle="tooltip" data-placement="top" title="Welcome to Yutian Blog">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/readme/" data-toggle="tooltip" data-placement="top" title="Career Path">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://caixiongjiang.github.io">caixiongjiang的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:youremail@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/your%20wechat%20qr%20code%20image">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/yourgithub">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="YuTian Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; YuTian Blog 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

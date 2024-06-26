@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ner on YuTian Blog</title>
+    <link>https://loveatcorner.github.io/tags/ner/</link>
+    <description>Recent content in Ner on YuTian Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 23 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://loveatcorner.github.io/tags/ner/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>实体命名识别技术介绍</title>
+      <link>https://loveatcorner.github.io/2024/06/23/introducing-the-ner-technology/</link>
+      <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/2024/06/23/introducing-the-ner-technology/</guid>
+      <description>NER案例 例子：命名实体识别（NER） 假设我们有如下句子： &amp;#34;John lives in New York.&amp;#34; 目标是识别出句子中的命名实体，并将其标注为对应的标签。对于这个例子，我们</description>
+    </item>
+  </channel>
+</rss>

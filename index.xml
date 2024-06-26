@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>YuTian Blog</title>
+    <link>https://loveatcorner.github.io/</link>
+    <description>Recent content on YuTian Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 26 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://loveatcorner.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>六月萤火</title>
+      <link>https://loveatcorner.github.io/2024/06/26/firefly/</link>
+      <pubDate>Wed, 26 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/2024/06/26/firefly/</guid>
+      <description>景色 萤火虫像漫天流星，在夜空中缓缓流过 地点 雨后 上天竺法喜讲寺停车场 云山竺院后面的茶园 地图 出发地：上天竺停车场 目的地：云山竺院</description>
+    </item>
+    <item>
+      <title>Career Path</title>
+      <link>https://loveatcorner.github.io/post/readme/</link>
+      <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/post/readme/</guid>
+      <description>Career Path In my first year, I worked as a big data team in a cybersecurity company and learned about the Hadoop big data ecosystem components, including Spark and Hive In the second year, I worked at a big data company and systematically learned about the development and maintenance of HIVE databases, as well as machine learning modeling for text structuring in the field of natural language, In my third</description>
+    </item>
+    <item>
+      <title>实体命名识别技术介绍</title>
+      <link>https://loveatcorner.github.io/2024/06/23/introducing-the-ner-technology/</link>
+      <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/2024/06/23/introducing-the-ner-technology/</guid>
+      <description>NER案例 例子：命名实体识别（NER） 假设我们有如下句子： &amp;#34;John lives in New York.&amp;#34; 目标是识别出句子中的命名实体，并将其标注为对应的标签。对于这个例子，我们</description>
+    </item>
+    <item>
+      <title>Welcome to Yutian Blog</title>
+      <link>https://loveatcorner.github.io/2017/11/03/hello-world/</link>
+      <pubDate>Sat, 04 Nov 2017 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/2017/11/03/hello-world/</guid>
+      <description>“Yeah It&amp;rsquo;s on. ” Hello World!</description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://loveatcorner.github.io/notes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/notes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://loveatcorner.github.io/search/placeholder/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/search/placeholder/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Posts Archive</title>
+      <link>https://loveatcorner.github.io/archive/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://loveatcorner.github.io/archive/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>
