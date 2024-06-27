@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="YuTian Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="/img/2024-06-26-LLMs_api/LLMs_api.jpg">
+    <meta property="twitter:image" content="/img/2024-06-26-LLMs_api/LLMs_api.jpg" />
+    
+
+    
+    <meta name="title" content="大模型接口" />
+    <meta property="og:title" content="大模型接口" />
+    <meta property="twitter:title" content="大模型接口" />
+    
+
+    
+    <meta name="description" content="介绍开源大模型接口的开发思路">
+    <meta property="og:description" content="介绍开源大模型接口的开发思路" />
+    <meta property="twitter:description" content="介绍开源大模型接口的开发思路" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="虞天, 虞天的博客, YuTian Blog, 博客, llms, 大模型, Kubernetes, 微服务, ">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>大模型接口 | 虞天的博客 | YuTian Blog</title>
+
+    <link rel="canonical" href="/2024/06/26/LLMs_api/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">YuTian Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes//">NOTES</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/2024-06-26-LLMs_api/LLMs_api.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/llms" title="LLMs">
+                            LLMs
+                        </a>
+                        
+                    </div>
+                    <h1>大模型接口</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;虞天&#34;
+                             
+                            on 
+                            Wednesday, June 26, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="开发大模型api接口开发思路">开发大模型API接口开发思路</h1>
+<h2 id="第一步调用开源模型">第一步、调用开源模型</h2>
+<p><strong>开源大模型</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> transformers <span style="color:#ff79c6">import</span> AutoModelForCausalLM, AutoTokenizer
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> transformers.generation <span style="color:#ff79c6">import</span> GenerationConfig
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model_path <span style="color:#ff79c6">=</span> os<span style="color:#ff79c6">.</span>path<span style="color:#ff79c6">.</span>join(current_path, <span style="color:#f1fa8c">&#34;models/Qwen-7B-Chat&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Model names: &#34;Qwen/Qwen-7B-Chat&#34;, &#34;Qwen/Qwen-14B-Chat&#34;</span>
+</span></span><span style="display:flex;"><span>tokenizer <span style="color:#ff79c6">=</span> AutoTokenizer<span style="color:#ff79c6">.</span>from_pretrained(model_path, trust_remote_code<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># use bf16</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&#34;auto&#34;, trust_remote_code=True, bf16=True).eval()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># use fp16</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&#34;auto&#34;, trust_remote_code=True, fp16=True).eval()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># use cpu only</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&#34;cpu&#34;, trust_remote_code=True).eval()</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># use auto mode, automatically select precision based on the device.</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> AutoModelForCausalLM<span style="color:#ff79c6">.</span>from_pretrained(
+</span></span><span style="display:flex;"><span>    model_path,
+</span></span><span style="display:flex;"><span>    device_map<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;auto&#34;</span>,
+</span></span><span style="display:flex;"><span>    trust_remote_code<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>
+</span></span><span style="display:flex;"><span>)<span style="color:#ff79c6">.</span>eval()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Specify hyperparameters for generation. But if you use transformers&gt;=4.32.0, there is no need to do this.</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># model.generation_config = GenerationConfig.from_pretrained(&#34;Qwen/Qwen-7B-Chat&#34;, trust_remote_code=True)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 1st dialogue turn</span>
+</span></span><span style="display:flex;"><span>response, history <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>chat(tokenizer, <span style="color:#f1fa8c">&#34;你好&#34;</span>, history<span style="color:#ff79c6">=</span><span style="color:#ff79c6">None</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 2nd dialogue turn</span>
+</span></span><span style="display:flex;"><span>response, history <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>chat(tokenizer, <span style="color:#f1fa8c">&#34;给我讲一个年轻人奋斗创业最终取得成功的故事。&#34;</span>, history<span style="color:#ff79c6">=</span>history)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 3rd dialogue turn</span>
+</span></span><span style="display:flex;"><span>response, history <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>chat(tokenizer, <span style="color:#f1fa8c">&#34;给这个故事起一个标题&#34;</span>, history<span style="color:#ff79c6">=</span>history)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response)
+</span></span></code></pre></div><p>参考：
+<a href="https://github.com/QwenLM/Qwen">qwen官方仓库</a></p>
+<p><strong>调用精调后的模型</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> transformers <span style="color:#ff79c6">import</span> AutoTokenizer
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> peft <span style="color:#ff79c6">import</span> AutoPeftModelForCausalLM
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model_path <span style="color:#ff79c6">=</span> os<span style="color:#ff79c6">.</span>path<span style="color:#ff79c6">.</span>join(current_path, <span style="color:#f1fa8c">&#34;models/Qwen-finetune&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tokenizer <span style="color:#ff79c6">=</span> AutoTokenizer<span style="color:#ff79c6">.</span>from_pretrained(model_path, trust_remote_code<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)
+</span></span><span style="display:flex;"><span>model <span style="color:#ff79c6">=</span> AutoPeftModelForCausalLM<span style="color:#ff79c6">.</span>from_pretrained(model_path, device_map<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;auto&#34;</span>, trust_remote_code<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>, fp16<span style="color:#ff79c6">=</span><span style="color:#ff79c6">True</span>)<span style="color:#ff79c6">.</span>eval()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 1st dialogue turn</span>
+</span></span><span style="display:flex;"><span>response, history <span style="color:#ff79c6">=</span> model<span style="color:#ff79c6">.</span>chat(tokenizer, <span style="color:#f1fa8c">&#34;你好&#34;</span>, history<span style="color:#ff79c6">=</span><span style="color:#ff79c6">None</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response)
+</span></span></code></pre></div><h2 id="第二步开发api">第二步、开发API</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#6272a4"># -- coding: utf-8 --</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> tornado.httpserver  <span style="color:#6272a4"># tornado      HTTP Server implementation</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> tornado.ioloop
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> tornado.web
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> logic <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> conf <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">from</span> my_logger <span style="color:#ff79c6">import</span> <span style="color:#ff79c6">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">HealthHandler</span>(tornado<span style="color:#ff79c6">.</span>web<span style="color:#ff79c6">.</span>RequestHandler):
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">get</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 正确发送响应</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>write(<span style="color:#f1fa8c">&#39;health&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">post</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 正确发送响应</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#ff79c6">.</span>write(<span style="color:#f1fa8c">&#39;health&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> __name__ <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#39;---- ----  Service is being started! ---- ----&#39;</span>)
+</span></span><span style="display:flex;"><span>    logger<span style="color:#ff79c6">.</span>info(<span style="color:#f1fa8c">&#39;---- ----  Service is being started! ---- ----&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 创建一个 Tornado Web 应用程序实例，其中包含一个路由，路径为 /server/，对应的处理程序是 MainHandler。</span>
+</span></span><span style="display:flex;"><span>        app <span style="color:#ff79c6">=</span> tornado<span style="color:#ff79c6">.</span>web<span style="color:#ff79c6">.</span>Application(
+</span></span><span style="display:flex;"><span>            handlers<span style="color:#ff79c6">=</span>[
+</span></span><span style="display:flex;"><span>                (<span style="color:#f1fa8c">r</span><span style="color:#f1fa8c">&#34;/health/&#34;</span>, HealthHandler)  <span style="color:#6272a4"># 新添加的路由</span>
+</span></span><span style="display:flex;"><span>            ]
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 创建一个 Tornado HTTP 服务器实例，并将之前创建的 Web 应用程序传递给构造函数。</span>
+</span></span><span style="display:flex;"><span>        http_server <span style="color:#ff79c6">=</span> tornado<span style="color:#ff79c6">.</span>httpserver<span style="color:#ff79c6">.</span>HTTPServer(app)
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 设置 HTTP 服务器监听的端口号。</span>
+</span></span><span style="display:flex;"><span>        http_server<span style="color:#ff79c6">.</span>listen(port)
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">&#39;---- ----  Listening to the port! ---- ----&#39;</span>)
+</span></span><span style="display:flex;"><span>        logger<span style="color:#ff79c6">.</span>info(<span style="color:#f1fa8c">&#39;---- ----  Listening to the port! ---- ----&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 启动 Tornado 事件循环，以便处理传入的请求。</span>
+</span></span><span style="display:flex;"><span>        tornado<span style="color:#ff79c6">.</span>ioloop<span style="color:#ff79c6">.</span>IOLoop<span style="color:#ff79c6">.</span>instance()<span style="color:#ff79c6">.</span>start()
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 如果在启动过程中出现任何异常，将打印异常并记录到日志。</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">except</span> Exception <span style="color:#ff79c6">as</span> e:
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">print</span>(e)
+</span></span><span style="display:flex;"><span>        logger<span style="color:#ff79c6">.</span>error(<span style="color:#f1fa8c">&#39;main start error: </span><span style="color:#f1fa8c">{}</span><span style="color:#f1fa8c">&#39;</span><span style="color:#ff79c6">.</span>format(e))
+</span></span></code></pre></div><p>这里使用 Tornado 框架作为服务器，并使用 Tornado 的 WebSocketHandler 来处理客户端的连接和消息。</p>
+<p>只需要自己定义Handler（继承tornado.web.RequestHandler类），传参给web应用实例tornado.web.Application，就是可以自定义的大模型接口</p>
+<h2 id="第三步api测试">第三步、API测试</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> time
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>base_url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;http://0.0.0.0:8501&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">test_qwen_api_server</span>():
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    header <span style="color:#ff79c6">=</span> {<span style="color:#f1fa8c">&#34;appId&#34;</span>: <span style="color:#f1fa8c">&#34;coon&#34;</span>,<span style="color:#f1fa8c">&#34;token&#34;</span>: <span style="color:#f1fa8c">&#34;92db43ea-b1ae-005056a542f0&#34;</span>,<span style="color:#f1fa8c">&#34;requestId&#34;</span>:<span style="color:#f1fa8c">&#34;2021062100000931546240&#34;</span>,<span style="color:#f1fa8c">&#34;requestTime&#34;</span>:<span style="color:#f1fa8c">&#34;2021-03-16 23:15:00&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;你是谁？&#34;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    data <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;prompt&#34;</span>: prompt
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 接口返回时间计时</span>
+</span></span><span style="display:flex;"><span>    start_time <span style="color:#ff79c6">=</span> time<span style="color:#ff79c6">.</span>time()
+</span></span><span style="display:flex;"><span>    response <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">{</span>base_url<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">/server/&#34;</span>, json<span style="color:#ff79c6">=</span>data, headers<span style="color:#ff79c6">=</span>header)
+</span></span><span style="display:flex;"><span>    end_time <span style="color:#ff79c6">=</span> time<span style="color:#ff79c6">.</span>time()
+</span></span><span style="display:flex;"><span>    toping <span style="color:#ff79c6">=</span> data[<span style="color:#f1fa8c">&#34;prompt&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Response Time for prompt &#39;</span><span style="color:#f1fa8c">{</span>toping[:<span style="color:#bd93f9">30</span>]<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">...&#39;: </span><span style="color:#f1fa8c">{</span>end_time <span style="color:#ff79c6">-</span> start_time<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> seconds&#34;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 将字符串转换为 JSON 对象  </span>
+</span></span><span style="display:flex;"><span>    json_data <span style="color:#ff79c6">=</span> json<span style="color:#ff79c6">.</span>loads(response<span style="color:#ff79c6">.</span>text)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 输出 JSON 对象  </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">print</span>(json_data)  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 将字符串转换为 JSON 对象  </span>
+</span></span><span style="display:flex;"><span>    json_data <span style="color:#ff79c6">=</span> json<span style="color:#ff79c6">.</span>loads(response<span style="color:#ff79c6">.</span>text)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4"># 将 JSON 对象写入文件</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(<span style="color:#f1fa8c">&#39;response_data.json&#39;</span>, <span style="color:#f1fa8c">&#39;a&#39;</span>, encoding<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;utf-8&#39;</span>) <span style="color:#ff79c6">as</span> file:
+</span></span><span style="display:flex;"><span>        json<span style="color:#ff79c6">.</span>dump(json_data, file, ensure_ascii<span style="color:#ff79c6">=</span><span style="color:#ff79c6">False</span>, indent<span style="color:#ff79c6">=</span><span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>        file<span style="color:#ff79c6">.</span>write(<span style="color:#f1fa8c">&#39;</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#39;</span>)  <span style="color:#6272a4"># 在每个响应后添加换行符，以便区分不同的响应</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>test_qwen_api_server()
+</span></span></code></pre></div><p>写request请求，传参数的时候，header和body要参考接口定义的格式</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://loveAtCorner.github.io/"><img src="/img/favicon.png" />YuTian Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2024/06/25/firefly/" data-toggle="tooltip" data-placement="top" title="Firefly">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2024/06/27/LLMs_asyn_api/" data-toggle="tooltip" data-placement="top" title="大模型并发接口">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/llms" title="llms">
+                            llms
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://caixiongjiang.github.io">caixiongjiang的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:leoyutian@yeah.net">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/loveAtCorner">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/tianyu271828">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="YuTian Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; YuTian Blog 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

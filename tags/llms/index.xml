@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on YuTian Blog</title>
-    <link>https://loveAtCorner.github.io/post/</link>
-    <description>Recent content in Posts on YuTian Blog</description>
+    <title>LLMs on YuTian Blog</title>
+    <link>https://loveAtCorner.github.io/tags/llms/</link>
+    <description>Recent content in LLMs on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 27 Jun 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://loveAtCorner.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://loveAtCorner.github.io/tags/llms/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>大模型并发接口</title>
       <link>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</link>
@@ -21,20 +21,6 @@
       <pubDate>Wed, 26 Jun 2024 00:00:00 +0000</pubDate>
       <guid>https://loveAtCorner.github.io/2024/06/26/LLMs_api/</guid>
       <description>开发大模型API接口开发思路 第一步、调用开源模型 开源大模型 from transformers import AutoModelForCausalLM, AutoTokenizer from transformers.generation import GenerationConfig model_path = os.path.join(current_path, &amp;#34;models/Qwen-7B-Chat&amp;#34;) # Model names: &amp;#34;Qwen/Qwen-7B-Chat&amp;#34;, &amp;#34;Qwen/Qwen-14B-Chat&amp;#34; tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True) # use bf16 # model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&amp;#34;auto&amp;#34;, trust_remote_code=True, bf16=True).eval() # use fp16 # model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&amp;#34;auto&amp;#34;, trust_remote_code=True,</description>
-    </item>
-    <item>
-      <title>Firefly</title>
-      <link>https://loveAtCorner.github.io/2024/06/25/firefly/</link>
-      <pubDate>Tue, 25 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/06/25/firefly/</guid>
-      <description>景色 萤火虫像漫天流星，在夜空中缓缓流过 地点 雨后 上天竺法喜讲寺停车场 云山竺院后面的茶园 地图 出发地：上天竺停车场 目的地：云山竺院</description>
-    </item>
-    <item>
-      <title>实体命名识别技术介绍</title>
-      <link>https://loveAtCorner.github.io/2024/06/23/introducing-the-ner-technology/</link>
-      <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/06/23/introducing-the-ner-technology/</guid>
-      <description>NER案例 例子：命名实体识别（NER） 假设我们有如下句子： &amp;#34;John lives in New York.&amp;#34; 目标是识别出句子中的命名实体，并将其标注为对应的标签。对于这个例子，我们</description>
     </item>
   </channel>
 </rss>

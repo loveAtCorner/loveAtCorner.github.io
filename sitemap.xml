@@ -2,45 +2,53 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://loveatcorner.github.io/categories/</loc>
+    <loc>https://loveAtCorner.github.io/categories/</loc>
+    <lastmod>2024-06-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://loveAtCorner.github.io/tags/llms/</loc>
+    <lastmod>2024-06-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://loveAtCorner.github.io/post/</loc>
+    <lastmod>2024-06-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://loveAtCorner.github.io/tags/</loc>
+    <lastmod>2024-06-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://loveAtCorner.github.io/categories/tech/</loc>
+    <lastmod>2024-06-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://loveAtCorner.github.io/</loc>
+    <lastmod>2024-06-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</loc>
+    <lastmod>2024-06-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://loveAtCorner.github.io/2024/06/26/LLMs_api/</loc>
     <lastmod>2024-06-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://loveatcorner.github.io/tags/istio/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
+    <loc>https://loveAtCorner.github.io/2024/06/25/firefly/</loc>
+    <lastmod>2024-06-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://loveatcorner.github.io/post/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
+    <loc>https://loveAtCorner.github.io/categories/life/</loc>
+    <lastmod>2024-06-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://loveatcorner.github.io/tags/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
+    <loc>https://loveAtCorner.github.io/tags/scenery/</loc>
+    <lastmod>2024-06-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://loveatcorner.github.io/categories/tech/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://loveatcorner.github.io/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://loveatcorner.github.io/2024/06/26/firefly/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://loveatcorner.github.io/post/readme/</loc>
+    <loc>https://loveAtCorner.github.io/tags/nlp/</loc>
     <lastmod>2024-06-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://loveatcorner.github.io/tags/ner/</loc>
+    <loc>https://loveAtCorner.github.io/2024/06/23/introducing-the-ner-technology/</loc>
     <lastmod>2024-06-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://loveatcorner.github.io/2024/06/23/introducing-the-ner-technology/</loc>
-    <lastmod>2024-06-23T00:00:00+00:00</lastmod>
+    <loc>https://loveAtCorner.github.io/about/</loc>
   </url><url>
-    <loc>https://loveatcorner.github.io/2017/11/03/hello-world/</loc>
-    <lastmod>2017-11-04T00:00:00+00:00</lastmod>
+    <loc>https://loveAtCorner.github.io/notes/</loc>
   </url><url>
-    <loc>https://loveatcorner.github.io/notes/</loc>
+    <loc>https://loveAtCorner.github.io/search/placeholder/</loc>
   </url><url>
-    <loc>https://loveatcorner.github.io/search/placeholder/</loc>
+    <loc>https://loveAtCorner.github.io/archive/</loc>
   </url><url>
-    <loc>https://loveatcorner.github.io/archive/</loc>
-  </url><url>
-    <loc>https://loveatcorner.github.io/search/</loc>
+    <loc>https://loveAtCorner.github.io/search/</loc>
   </url>
 </urlset>

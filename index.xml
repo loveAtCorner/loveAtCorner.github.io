@@ -2,59 +2,66 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>YuTian Blog</title>
-    <link>https://loveatcorner.github.io/</link>
+    <link>https://loveAtCorner.github.io/</link>
     <description>Recent content on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 26 Jun 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://loveatcorner.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 27 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://loveAtCorner.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>六月萤火</title>
-      <link>https://loveatcorner.github.io/2024/06/26/firefly/</link>
+      <title>大模型并发接口</title>
+      <link>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</link>
+      <pubDate>Thu, 27 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</guid>
+      <description>并发接口开发思路 使用FastAPI编写一个并发接口非常简单，因为FastAPI本身是基于Python的异步框架——Starlette和Pyd</description>
+    </item>
+    <item>
+      <title>大模型接口</title>
+      <link>https://loveAtCorner.github.io/2024/06/26/LLMs_api/</link>
       <pubDate>Wed, 26 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveatcorner.github.io/2024/06/26/firefly/</guid>
+      <guid>https://loveAtCorner.github.io/2024/06/26/LLMs_api/</guid>
+      <description>开发大模型API接口开发思路 第一步、调用开源模型 开源大模型 from transformers import AutoModelForCausalLM, AutoTokenizer from transformers.generation import GenerationConfig model_path = os.path.join(current_path, &amp;#34;models/Qwen-7B-Chat&amp;#34;) # Model names: &amp;#34;Qwen/Qwen-7B-Chat&amp;#34;, &amp;#34;Qwen/Qwen-14B-Chat&amp;#34; tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True) # use bf16 # model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&amp;#34;auto&amp;#34;, trust_remote_code=True, bf16=True).eval() # use fp16 # model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&amp;#34;auto&amp;#34;, trust_remote_code=True,</description>
+    </item>
+    <item>
+      <title>Firefly</title>
+      <link>https://loveAtCorner.github.io/2024/06/25/firefly/</link>
+      <pubDate>Tue, 25 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/06/25/firefly/</guid>
       <description>景色 萤火虫像漫天流星，在夜空中缓缓流过 地点 雨后 上天竺法喜讲寺停车场 云山竺院后面的茶园 地图 出发地：上天竺停车场 目的地：云山竺院</description>
     </item>
     <item>
-      <title>Career Path</title>
-      <link>https://loveatcorner.github.io/post/readme/</link>
-      <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveatcorner.github.io/post/readme/</guid>
-      <description>Career Path In my first year, I worked as a big data team in a cybersecurity company and learned about the Hadoop big data ecosystem components, including Spark and Hive In the second year, I worked at a big data company and systematically learned about the development and maintenance of HIVE databases, as well as machine learning modeling for text structuring in the field of natural language, In my third</description>
-    </item>
-    <item>
       <title>实体命名识别技术介绍</title>
-      <link>https://loveatcorner.github.io/2024/06/23/introducing-the-ner-technology/</link>
+      <link>https://loveAtCorner.github.io/2024/06/23/introducing-the-ner-technology/</link>
       <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveatcorner.github.io/2024/06/23/introducing-the-ner-technology/</guid>
+      <guid>https://loveAtCorner.github.io/2024/06/23/introducing-the-ner-technology/</guid>
       <description>NER案例 例子：命名实体识别（NER） 假设我们有如下句子： &amp;#34;John lives in New York.&amp;#34; 目标是识别出句子中的命名实体，并将其标注为对应的标签。对于这个例子，我们</description>
     </item>
     <item>
-      <title>Welcome to Yutian Blog</title>
-      <link>https://loveatcorner.github.io/2017/11/03/hello-world/</link>
-      <pubDate>Sat, 04 Nov 2017 00:00:00 +0000</pubDate>
-      <guid>https://loveatcorner.github.io/2017/11/03/hello-world/</guid>
-      <description>“Yeah It&amp;rsquo;s on. ” Hello World!</description>
+      <title></title>
+      <link>https://loveAtCorner.github.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/about/</guid>
+      <description>About Me Career Path In my first year, I worked as a big data team in a cybersecurity company and learned about the Hadoop big data ecosystem components, including Spark and Hive&#xA;In the second year, I worked at a big data company and systematically learned about the development and maintenance of HIVE databases, as well as machine learning modeling for text structuring in the field of natural language,&#xA;In my third year, I worked at a software development company and successfully transformed into a natural language processing development engineer, mainly engaged in the research and development of dialogue robot engines</description>
     </item>
     <item>
       <title></title>
-      <link>https://loveatcorner.github.io/notes/</link>
+      <link>https://loveAtCorner.github.io/notes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://loveatcorner.github.io/notes/</guid>
-      <description></description>
+      <guid>https://loveAtCorner.github.io/notes/</guid>
+      <description>顶级英文期刊 IEEE Transactions on Pattern Analysis and Machine Intelligence JCR官方网站 小木虫期刊 顶级中文期刊 中国期刊全文数据库</description>
     </item>
     <item>
       <title></title>
-      <link>https://loveatcorner.github.io/search/placeholder/</link>
+      <link>https://loveAtCorner.github.io/search/placeholder/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://loveatcorner.github.io/search/placeholder/</guid>
+      <guid>https://loveAtCorner.github.io/search/placeholder/</guid>
       <description></description>
     </item>
     <item>
       <title>Posts Archive</title>
-      <link>https://loveatcorner.github.io/archive/</link>
+      <link>https://loveAtCorner.github.io/archive/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://loveatcorner.github.io/archive/</guid>
+      <guid>https://loveAtCorner.github.io/archive/</guid>
       <description></description>
     </item>
   </channel>
