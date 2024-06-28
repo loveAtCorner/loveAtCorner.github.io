@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on YuTian Blog</title>
+    <link>https://loveAtCorner.github.io/tags/python/</link>
+    <description>Recent content in Python on YuTian Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 11 May 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://loveAtCorner.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>conda管理python环境</title>
+      <link>https://loveAtCorner.github.io/2023/05/11/introducing-conda/</link>
+      <pubDate>Thu, 11 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2023/05/11/introducing-conda/</guid>
+      <description>如果你已经在本地电脑上配好了虚拟环境A，并且想要备份环境A或者让别人直接使用你配好的环境A，可以采用以下三种方式： 一、环境迁移—快照 使用 conda create</description>
+    </item>
+  </channel>
+</rss>

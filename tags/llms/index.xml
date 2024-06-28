@@ -6,8 +6,15 @@
     <description>Recent content in LLMs on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 27 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 28 Jun 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://loveAtCorner.github.io/tags/llms/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ollama实操</title>
+      <link>https://loveAtCorner.github.io/2024/06/28/ollama/</link>
+      <pubDate>Fri, 28 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/06/28/ollama/</guid>
+      <description>如何使用ollama在本地启动服务 一. 下载 Ollama 安装文件 访问 https://ollama.com/download ，选择 Windows，单击 “Download for Windows (Preview)” 进行下载。 二.</description>
+    </item>
     <item>
       <title>大模型并发接口</title>
       <link>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</link>

@@ -6,8 +6,15 @@
     <description>Recent content in Tech on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 27 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 28 Jun 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://loveAtCorner.github.io/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ollama实操</title>
+      <link>https://loveAtCorner.github.io/2024/06/28/ollama/</link>
+      <pubDate>Fri, 28 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/06/28/ollama/</guid>
+      <description>如何使用ollama在本地启动服务 一. 下载 Ollama 安装文件 访问 https://ollama.com/download ，选择 Windows，单击 “Download for Windows (Preview)” 进行下载。 二.</description>
+    </item>
     <item>
       <title>大模型并发接口</title>
       <link>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</link>
@@ -28,6 +35,13 @@
       <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
       <guid>https://loveAtCorner.github.io/2024/06/23/introducing-the-ner-technology/</guid>
       <description>NER案例 例子：命名实体识别（NER） 假设我们有如下句子： &amp;#34;John lives in New York.&amp;#34; 目标是识别出句子中的命名实体，并将其标注为对应的标签。对于这个例子，我们</description>
+    </item>
+    <item>
+      <title>conda管理python环境</title>
+      <link>https://loveAtCorner.github.io/2023/05/11/introducing-conda/</link>
+      <pubDate>Thu, 11 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2023/05/11/introducing-conda/</guid>
+      <description>如果你已经在本地电脑上配好了虚拟环境A，并且想要备份环境A或者让别人直接使用你配好的环境A，可以采用以下三种方式： 一、环境迁移—快照 使用 conda create</description>
     </item>
   </channel>
 </rss>

@@ -10,20 +10,20 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="https://loveAtCorner.github.io//img/home-bg-jeep.jpg">
-    <meta property="twitter:image" content="https://loveAtCorner.github.io//img/home-bg-jeep.jpg" />
+    <meta property="og:image" content="/img/2023-05-11-introducing-conda/conda_pack.jpg">
+    <meta property="twitter:image" content="/img/2023-05-11-introducing-conda/conda_pack.jpg" />
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="conda管理python环境" />
+    <meta property="og:title" content="conda管理python环境" />
+    <meta property="twitter:title" content="conda管理python环境" />
     
 
     
-    <meta name="description" content="虞天，程序员, 开源爱好者，生活探险家 | 这里是 虞天 的博客，与你一起发现更大的世界。">
-    <meta property="og:description" content="虞天，程序员, 开源爱好者，生活探险家 | 这里是 虞天 的博客，与你一起发现更大的世界。" />
-    <meta property="twitter:description" content="虞天，程序员, 开源爱好者，生活探险家 | 这里是 虞天 的博客，与你一起发现更大的世界。" />
+    <meta name="description" content="介绍conda迁移python环境的三种方法">
+    <meta property="og:description" content="介绍conda迁移python环境的三种方法" />
+    <meta property="twitter:description" content="介绍conda迁移python环境的三种方法" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="虞天, 虞天的博客, YuTian Blog, 博客, llms, 大模型, Kubernetes, 微服务, ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Categories | 虞天的博客 | YuTian Blog</title>
+    <title>conda管理python环境 | 虞天的博客 | YuTian Blog</title>
 
-    <link rel="canonical" href="/categories/">
+    <link rel="canonical" href="/2023/05/11/introducing-conda/">
 
     
     
@@ -159,14 +159,41 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/home-bg-jeep.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/2023-05-11-introducing-conda/conda_pack.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>YuTian Blog </h1>
-                    
-		    <span class="subheading">路在脚下，心向远方</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/python" title="python">
+                            python
+                        </a>
+                        
+                    </div>
+                    <h1>conda管理python环境</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;虞天&#34;
+                             
+                            on 
+                            Thursday, May 11, 2023
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -179,18 +206,131 @@
 <article>
     <div class="container">
         <div class="row">
+
             
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
                 post-container">
 
-         	
+                
+                <p>如果你已经在本地电脑上配好了虚拟环境A，并且想要备份环境A或者让别人直接使用你配好的环境A，可以采用以下三种方式：</p>
+<h1 id="一环境迁移快照">一、环境迁移—快照</h1>
+<p>使用 <code>conda create</code> 命令创建环境的快照或备份</p>
+<p>这种方式通过克隆现有环境来创建一个新的环境快照或备份：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># 克隆名为 myenv 的环境，并创建一个名为 snapshot 的新环境</span>
+</span></span><span style="display:flex;"><span>conda create --name snapshot --clone myenv
+</span></span></code></pre></div><p>这样会创建一个新的环境 <code>snapshot</code>，它是 <code>myenv</code> 环境的副本。</p>
+<h1 id="二环境迁移打包">二、环境迁移—打包</h1>
+<p>本文主要记录conda-pack打包环境的过程。</p>
+<ol>
+<li>安装conda-pack第三方库：</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip install conda-pack
+</span></span></code></pre></div><ol start="2">
+<li>对环境进行打包。可以通过运行以下命令来完成此操作：</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>conda pack -n <span style="color:#ff79c6">{</span>环境名称<span style="color:#ff79c6">}</span> -o <span style="color:#ff79c6">{</span>输出压缩包路径，默认是当前目录  ***.tar.gz<span style="color:#ff79c6">}</span> 
+</span></span></code></pre></div><ol start="3">
+<li>在需要环境的系统中解压缩文件到conda的envs目录下，记得在envs目录新建一个文件夹：</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>tar xzf ***.tar.gz -C <span style="color:#ff79c6">{</span>目标路径<span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><p>到这环境就可以直接激活使用了。</p>
+<h1 id="三环境迁移使用yml配置文件重新联网下载">三、环境迁移—使用yml配置文件重新联网下载</h1>
+<p>我们在本地电脑已经配好了虚拟环境A，然后我们需要在 不同平台和操作系统 之间 复现环境，我们可以使用以下命令生成 .yml文件。</p>
+<ol>
+<li>导出 environment_name.yml 文件</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>conda env <span style="color:#8be9fd;font-style:italic">export</span> &gt; environment_market.yml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>conda env <span style="color:#8be9fd;font-style:italic">export</span> &gt; environment_LLM.yml
+</span></span></code></pre></div><ol start="2">
+<li>利用生成的environment_name.yml 文件复现环境</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>conda env create --prefix D:<span style="color:#f1fa8c">\c</span>ondaenv<span style="color:#f1fa8c">\m</span>arket -f environment_market.yml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>conda env create --prefix D:<span style="color:#f1fa8c">\c</span>ondaenv<span style="color:#f1fa8c">\L</span>LM -f environment_LLM.yml
+</span></span></code></pre></div><h2 id="总结">总结：</h2>
+<p>Conda-Pack 打包环境方式在目标计算机无法联网或者网络不畅时很好用，而Conda导出 environment.yml 的方式非常适合在不同平台和操作系统之间重新创建环境。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://loveAtCorner.github.io/"><img src="/img/favicon.png" />YuTian Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2024/06/23/introducing-the-ner-technology/" data-toggle="tooltip" data-placement="top" title="实体命名识别技术介绍">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
                 
 
 
-
             </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
             
             <div class="
                 col-lg-8 col-lg-offset-2
@@ -207,7 +347,7 @@
                         
                         
                         <a href="/tags/llms" title="llms">
-                        llms
+                            llms
                         </a>
                         
                         
@@ -305,7 +445,7 @@
             
            
                    <li>
-                       <a href='/categories/index.xml' rel="alternate" type="application/rss+xml" title="YuTian Blog" >
+                       <a href='' rel="alternate" type="application/rss+xml" title="YuTian Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
