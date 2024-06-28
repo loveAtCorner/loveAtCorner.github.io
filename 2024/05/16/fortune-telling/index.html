@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="YuTian Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="/img/2024-05-16-fortune-telling/fortune-telling.jpg">
+    <meta property="twitter:image" content="/img/2024-05-16-fortune-telling/fortune-telling.jpg" />
+    
+
+    
+    <meta name="title" content="八字算命" />
+    <meta property="og:title" content="八字算命" />
+    <meta property="twitter:title" content="八字算命" />
+    
+
+    
+    <meta name="description" content="介绍一些八字的解读思路">
+    <meta property="og:description" content="介绍一些八字的解读思路" />
+    <meta property="twitter:description" content="介绍一些八字的解读思路" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="虞天, 虞天的博客, YuTian Blog, 博客, llms, 大模型, Kubernetes, 微服务, ">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>八字算命 | 虞天的博客 | YuTian Blog</title>
+
+    <link rel="canonical" href="/2024/05/16/fortune-telling/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">YuTian Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes//">NOTES</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/2024-05-16-fortune-telling/fortune-telling.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/fortune" title="fortune">
+                            fortune
+                        </a>
+                        
+                    </div>
+                    <h1>八字算命</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;虞天&#34;
+                             
+                            on 
+                            Thursday, May 16, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="八字算命入门">八字算命入门</h1>
+<h2 id="推演工具">推演工具</h2>
+<p><a href="http://www.paipan.wang/">信达利命理预测工具网</a></p>
+<h2 id="十神常规解读">十神常规解读</h2>
+<h3 id="一看本人的性格">一、看本人的性格</h3>
+<p>在八字命理（也称为四柱命理学）中，本人的性格可以通过分析八字中的天干地支及其相互关系来得知。八字命理以出生的年、月、日、时的干支组合为基础，每一柱都有天干和地支，分别代表不同的五行（木、火、土、金、水）和阴阳属性。</p>
+<p>以下是一些基本的步骤和要素：</p>
+<ol>
+<li>
+<p><strong>日主（日干）</strong>：
+日干代表本人，是八字命理中分析性格的核心。根据日干的五行属性，可以初步判断一个人的性格倾向。例如：</p>
+<ul>
+<li><strong>甲木</strong>：坚韧不拔，具有创新精神，喜欢自由和冒险。</li>
+<li><strong>乙木</strong>：柔韧性强，细腻温和，善于交际。</li>
+<li><strong>丙火</strong>：热情奔放，积极主动，充满活力。</li>
+<li><strong>丁火</strong>：温暖细致，情感丰富，注重内心感受。</li>
+<li><strong>戊土</strong>：踏实稳重，可靠可信，具有领导力。</li>
+<li><strong>己土</strong>：温和内敛，重视稳定和安全，注重家庭。</li>
+<li><strong>庚金</strong>：刚毅果敢，直率有力，喜欢挑战。</li>
+<li><strong>辛金</strong>：细腻敏感，注重细节，重视美感。</li>
+<li><strong>壬水</strong>：灵活多变，聪明机智，适应能力强。</li>
+<li><strong>癸水</strong>：温柔体贴，内心敏感，善于沟通。</li>
+</ul>
+</li>
+<li>
+<p><strong>五行的强弱</strong>：
+分析八字中的五行分布，看看哪一种五行强、哪一种五行弱。这种分布会影响一个人的性格。例如，五行偏旺的人，性格上会表现得更极端，而五行偏弱的人，则可能显得更柔和。</p>
+</li>
+<li>
+<p><strong>十神（正官、七杀、正印、偏印、正财、偏财、伤官、食神、比肩、劫财）</strong>：
+通过日干与其他天干地支的关系，可以推出十神，每一个十神都代表不同的性格特点和生活领域。例如，正官代表责任感和规范，七杀代表挑战和变动，正印代表依赖和支持，偏印代表智慧和独立等。</p>
+</li>
+<li>
+<p><strong>命局的平衡与喜忌</strong>：
+通过对八字命局的整体分析，找出喜神和忌神，了解命局的平衡点。这有助于更全面地理解一个人的性格。例如，如果某种五行是命局中的喜神，这种五行的特质会对本人有积极的影响。</p>
+</li>
+<li>
+<p><strong>大运与流年</strong>：
+大运和流年会对一个人的性格和生活产生不同的影响，特别是在特定年份或者运势中，某些五行的增强或减弱，会使性格表现得更加明显或者发生变化。</p>
+</li>
+</ol>
+<p>通过综合分析八字中的这些要素，可以得出一个比较全面和深入的性格特征。这种分析不仅可以了解一个人的性格，还可以为个人的发展提供一些指导。</p>
+<h3 id="二看父母">二、看父母</h3>
+<p>在八字命理中，分析父母关系主要通过八字中的十神（正印、偏印、正官、七杀等）来推断。同时，结合八字中的天干地支及其相互关系，可以更全面地了解父母的情况及其与本人的关系。以下是具体的分析方法：</p>
+<h3 id="十神与父母的关系">十神与父母的关系</h3>
+<ol>
+<li>
+<p><strong>正印和偏印（母亲）</strong>：</p>
+<ul>
+<li><strong>正印</strong>：代表母亲。正印为阴阳相生，表示母亲对自己的爱护和支持。</li>
+<li><strong>偏印</strong>：也代表母亲，但关系较正印相对淡薄，可能表示继母、养母或者其他母亲角色。</li>
+</ul>
+</li>
+<li>
+<p><strong>正官和七杀（父亲）</strong>：</p>
+<ul>
+<li><strong>正官</strong>：代表父亲。正官为阴阳相克，但这种克制是规范性的，表示父亲的严格和教导。</li>
+<li><strong>七杀</strong>：也代表父亲，但关系较正官相对严厉，可能表示生父、继父或者其他父亲角色。</li>
+</ul>
+</li>
+</ol>
+<h3 id="如何看父母关系">如何看父母关系</h3>
+<ol>
+<li>
+<p><strong>看天干和地支中的十神</strong>：</p>
+<ul>
+<li>如果八字中天干和地支中出现正印或偏印，可以推断母亲在命主生活中的角色和影响力。</li>
+<li>如果八字中天干和地支中出现正官或七杀，可以推断父亲在命主生活中的角色和影响力。</li>
+</ul>
+</li>
+<li>
+<p><strong>看十神的位置和组合</strong>：</p>
+<ul>
+<li>十神的位置（年柱、月柱、日柱、时柱）可以帮助判断父母在不同人生阶段的影响。</li>
+<li>如果十神在年柱，表示父母对早年生活的影响；在月柱，表示父母在青少年时期的影响；在日柱和时柱，则表示父母在成年后的影响。</li>
+</ul>
+</li>
+<li>
+<p><strong>看十神的强弱和相互关系</strong>：</p>
+<ul>
+<li>通过五行生克制化，判断十神的强弱，可以了解父母的性格和对命主的影响。如果正印或正官强，表示父母在命主生活中占据重要地位；如果偏印或七杀强，则表示父母关系可能更复杂。</li>
+<li>看十神之间的相互关系，例如正印和偏印是否相互制约，正官和七杀是否相互影响等，可以了解父母之间的关系及其对命主的影响。</li>
+</ul>
+</li>
+</ol>
+<h3 id="三看夫妻">三、看夫妻</h3>
+<p>在八字命理中，分析夫妻关系主要通过十神中的正财、偏财（代表男性的妻子）和正官、七杀（代表女性的丈夫）来推断。同时，通过八字中的天干地支及其相互关系，可以更全面地了解夫妻之间的关系及其对本人的影响。以下是具体的分析方法：</p>
+<h3 id="十神与夫妻关系">十神与夫妻关系</h3>
+<ol>
+<li>
+<p><strong>正财和偏财（男性的妻子）</strong>：</p>
+<ul>
+<li><strong>正财</strong>：代表妻子。正财为阴阳相生，表示妻子与命主之间的和谐与依赖关系。</li>
+<li><strong>偏财</strong>：也代表妻子，但关系较正财相对淡薄，可能表示情人、外遇或其他关系。</li>
+</ul>
+</li>
+<li>
+<p><strong>正官和七杀（女性的丈夫）</strong>：</p>
+<ul>
+<li><strong>正官</strong>：代表丈夫。正官为阴阳相克，但这种克制是规范性的，表示丈夫对命主的保护和规范。</li>
+<li><strong>七杀</strong>：也代表丈夫，但关系较正官相对严厉，可能表示丈夫较为强势或者有些严厉。</li>
+</ul>
+</li>
+</ol>
+<h3 id="如何看夫妻关系">如何看夫妻关系</h3>
+<ol>
+<li>
+<p><strong>看天干和地支中的十神</strong>：</p>
+<ul>
+<li>如果八字中天干和地支中出现正财或偏财，可以推断妻子在命主生活中的角色和影响力。</li>
+<li>如果八字中天干和地支中出现正官或七杀，可以推断丈夫在命主生活中的角色和影响力。</li>
+</ul>
+</li>
+<li>
+<p><strong>看十神的位置和组合</strong>：</p>
+<ul>
+<li>十神的位置（年柱、月柱、日柱、时柱）可以帮助判断夫妻在不同人生阶段的影响。</li>
+<li>如果十神在年柱，表示夫妻关系在早年或家庭环境中的影响；在月柱，表示夫妻关系在青少年时期的影响；在日柱和时柱，则表示夫妻关系在成年后的影响。</li>
+</ul>
+</li>
+<li>
+<p><strong>看十神的强弱和相互关系</strong>：</p>
+<ul>
+<li>通过五行生克制化，判断十神的强弱，可以了解夫妻的性格和对命主的影响。如果正财或正官强，表示夫妻在命主生活中占据重要地位；如果偏财或七杀强，则表示夫妻关系可能更复杂。</li>
+<li>看十神之间的相互关系，例如正财和偏财是否相互制约，正官和七杀是否相互影响等，可以了解夫妻之间的关系及其对命主的影响。</li>
+</ul>
+</li>
+</ol>
+<h3 id="四看兄弟">四、看兄弟</h3>
+<p>在八字命理中，分析兄弟关系主要通过十神中的比肩和劫财来推断。比肩和劫财分别代表命主的兄弟姐妹，通过这些十神的位置、强弱及其与其他十神的关系，可以了解命主与兄弟姐妹的关系及其对命主的影响。以下是具体的分析方法：</p>
+<h3 id="十神与兄弟关系">十神与兄弟关系</h3>
+<ol>
+<li><strong>比肩和劫财</strong>：
+<ul>
+<li><strong>比肩</strong>：代表兄弟姐妹，尤其是同性别的兄弟姐妹。比肩表示平等、竞争和分享，比肩强的人通常与兄弟姐妹关系紧密，具有竞争意识。</li>
+<li><strong>劫财</strong>：也代表兄弟姐妹，尤其是异性别的兄弟姐妹。劫财表示帮助、支援和分割，劫财强的人通常在家庭中与兄弟姐妹有较多的资源分配和分享。</li>
+</ul>
+</li>
+</ol>
+<h3 id="如何看兄弟关系">如何看兄弟关系</h3>
+<ol>
+<li>
+<p><strong>看天干和地支中的十神</strong>：</p>
+<ul>
+<li>如果八字中天干和地支中出现比肩或劫财，可以推断兄弟姐妹在命主生活中的角色和影响力。</li>
+</ul>
+</li>
+<li>
+<p><strong>看十神的位置和组合</strong>：</p>
+<ul>
+<li>十神的位置（年柱、月柱、日柱、时柱）可以帮助判断兄弟姐妹在不同人生阶段的影响。</li>
+<li>如果十神在年柱，表示兄弟姐妹在早年生活中的影响；在月柱，表示兄弟姐妹在青少年时期的影响；在日柱和时柱，则表示兄弟姐妹在成年后的影响。</li>
+</ul>
+</li>
+<li>
+<p><strong>看十神的强弱和相互关系</strong>：</p>
+<ul>
+<li>通过五行生克制化，判断比肩和劫财的强弱，可以了解兄弟姐妹的性格和对命主的影响。如果比肩或劫财强，表示兄弟姐妹在命主生活中占据重要地位；如果比肩或劫财弱，则表示兄弟姐妹关系较为淡薄。</li>
+<li>看比肩和劫财之间的相互关系，例如比肩和劫财是否相互制约，可以了解兄弟姐妹之间的关系及其对命主的影响。</li>
+</ul>
+</li>
+</ol>
+<h3 id="五看子女">五、看子女</h3>
+<p>在八字命理中，子女关系也是一个重要的分析内容。通过八字可以推算出与子女的关系、子女的性格特征、生活状况以及子女对命主一生的影响。主要通过以下几个方面来分析：</p>
+<h3 id="1-子女星">1. 子女星</h3>
+<p>在八字中，子女星的定位如下：</p>
+<ul>
+<li><strong>男命</strong>：以食神和伤官为子女星。食神代表女儿，伤官代表儿子。</li>
+<li><strong>女命</strong>：以正财和偏财为子女星。正财代表女儿，偏财代表儿子。</li>
+</ul>
+<h3 id="2-时柱">2. 时柱</h3>
+<p>时柱在八字中代表子女的情况，因为时柱的地支为子女宫：</p>
+<ul>
+<li><strong>时干</strong>：时干代表子女的性格和命主与子女的关系。</li>
+<li><strong>时支</strong>：时支代表子女的总体情况和命主与子女的生活环境。</li>
+</ul>
+<h3 id="3-十神组合">3. 十神组合</h3>
+<p>十神的组合在子女关系中起到关键作用，不同的组合反映出不同的子女特点：</p>
+<ul>
+<li><strong>食神与伤官</strong>：如果命局中食神和伤官较为突出，通常子女多才多艺，聪明伶俐。</li>
+<li><strong>正财与偏财</strong>：如果命局中正财和偏财较为突出，通常子女生活安稳，物质条件较好。</li>
+</ul>
+<h3 id="4-流年运势">4. 流年运势</h3>
+<p>流年运势对子女关系的影响也非常重要，特别是当某些流年引动子女星或子女宫时，需要特别关注：</p>
+<ul>
+<li><strong>子女运势</strong>：某些流年子女星或子女宫被引动，可能预示着子女生活变化或与命主的关系变化。</li>
+</ul>
+<h3 id="5-具体例子分析">5. 具体例子分析</h3>
+<ul>
+<li><strong>食神与伤官</strong>：某人八字中日干为甲木，八字中有丁火（食神）和丙火（伤官），通常说明其子女聪明有才华。</li>
+<li><strong>正财与偏财</strong>：某人八字中日干为丙火，八字中有壬水（正财）和癸水（偏财），通常说明其子女生活安稳，物质条件较好。</li>
+</ul>
+<h3 id="总结">总结</h3>
+<p>八字命理中的子女关系分析需要综合考虑子女星、时柱的位置和干支关系，以及十神的组合和流年运势的影响。通过对这些因素的详细分析，可以为个人提供有关子女关系的参考和建议。</p>
+<h3 id="六看疾厄">六、看疾厄</h3>
+<p>在八字命理中，疾厄主要指一个人的健康状况、疾病易感性及其一生中的大病小灾。分析一个人的疾厄，需要结合八字中的日元、地支藏干、十神的生克制化，以及五行的平衡情况。以下是具体的方法和步骤：</p>
+<h3 id="基本概念">基本概念</h3>
+<ol>
+<li><strong>日元</strong>：即日柱的天干，代表命主本人。</li>
+<li><strong>十神</strong>：通过日元与其他天干地支的关系，生成十神。与健康相关的十神有：
+<ul>
+<li><strong>印星（正印、偏印）</strong>：代表保护、支持、养生、恢复力等。</li>
+<li><strong>官杀星（正官、七杀）</strong>：代表压力、疾病、阻力等。</li>
+<li><strong>食伤星（食神、伤官）</strong>：代表消耗、泄气、释放等。</li>
+<li><strong>比劫（比肩、劫财）</strong>：代表同类力量，体质强弱。</li>
+</ul>
+</li>
+<li><strong>五行</strong>：五行的平衡与否直接影响健康状态，某一五行过旺或过弱均可能导致健康问题。</li>
+</ol>
+<h3 id="分析方法">分析方法</h3>
+<ol>
+<li>
+<p><strong>看日元强弱</strong>：</p>
+<ul>
+<li>日元过强或过弱，均可能导致健康问题。</li>
+<li>日元强，需要官杀来制，食伤来泄；日元弱，需要印星和比劫来扶助。</li>
+</ul>
+</li>
+<li>
+<p><strong>看官杀星的位置和强弱</strong>：</p>
+<ul>
+<li>官杀星代表疾病和压力，如果官杀星过旺，命主容易生病。</li>
+<li>官杀星如果有印星化解，说明命主有较好的恢复力和支持，健康状况较好。</li>
+</ul>
+</li>
+<li>
+<p><strong>看印星的位置和强弱</strong>：</p>
+<ul>
+<li>印星代表保护和恢复力，印星强旺的人，身体恢复力好，抗病能力强。</li>
+<li>印星过弱，命主容易缺乏保护和支持，健康状况较差。</li>
+</ul>
+</li>
+<li>
+<p><strong>看食伤星的位置和强弱</strong>：</p>
+<ul>
+<li>食伤星代表消耗和泄气，适当的食伤星有利于调节健康，但过旺会导致身体过度消耗。</li>
+<li>食伤星过弱，身体难以释放压力和毒素，容易积累病气。</li>
+</ul>
+</li>
+<li>
+<p><strong>看五行平衡</strong>：</p>
+<ul>
+<li>五行的平衡对健康至关重要。某一五行过旺或过弱，均可能导致相关的健康问题。</li>
+<li>具体五行对应的器官和健康问题如下：
+<ul>
+<li><strong>木</strong>：肝胆、筋骨、神经系统</li>
+<li><strong>火</strong>：心脏、小肠、血液循环</li>
+<li><strong>土</strong>：脾胃、消化系统、肌肉</li>
+<li><strong>金</strong>：肺、大肠、呼吸系统</li>
+<li><strong>水</strong>：肾脏、膀胱、生殖系统</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="具体步骤">具体步骤</h3>
+<ol>
+<li>
+<p><strong>确定日元强弱</strong>：</p>
+<ul>
+<li>查看日元所在月令（即月柱地支），判断其旺衰。</li>
+<li>查看命局中是否有生扶日元的印星、比劫，以及是否有克制日元的官杀星、财星、食伤星。</li>
+</ul>
+</li>
+<li>
+<p><strong>查看官杀星的位置和强弱</strong>：</p>
+<ul>
+<li>查看命局中官杀星的位置和力量，判断命主的健康压力和疾病易感性。</li>
+<li>官杀星强旺，需要印星化解，印星弱则健康状况较差。</li>
+</ul>
+</li>
+<li>
+<p><strong>查看印星的位置和强弱</strong>：</p>
+<ul>
+<li>查看命局中印星的位置和力量，判断命主的保护力和恢复力。</li>
+<li>印星强旺，命主抗病能力强，恢复力好。</li>
+</ul>
+</li>
+<li>
+<p><strong>查看食伤星的位置和强弱</strong>：</p>
+<ul>
+<li>查看命局中食伤星的位置和力量，判断命主的消耗和泄气情况。</li>
+<li>食伤星适中有利于调节健康，过旺过弱均不利健康。</li>
+</ul>
+</li>
+<li>
+<p><strong>查看五行平衡</strong>：</p>
+<ul>
+<li>查看命局中的五行分布情况，判断命主的五行是否平衡。</li>
+<li>五行平衡，健康状况较好；五行失衡，容易导致相关的健康问题。</li>
+</ul>
+</li>
+</ol>
+<h3 id="七看交友">七、看交友</h3>
+<p>在八字命理中，交友宫（又称朋友宫、交际宫）主要用来分析一个人的朋友、社交圈以及人际关系。要看一个人的交友情况，需要综合八字中的日元、地支藏干、十神的关系以及五行的平衡情况来判断。以下是具体的方法和步骤：</p>
+<h3 id="基本概念-1">基本概念</h3>
+<ol>
+<li><strong>日元</strong>：即日柱的天干，代表命主本人。</li>
+<li><strong>十神</strong>：通过日元与其他天干地支的关系，生成十神。与交友相关的十神有：
+<ul>
+<li><strong>比肩</strong>：代表朋友、同辈、同事、合作者，通常象征着与命主平等关系的人。</li>
+<li><strong>劫财</strong>：代表兄弟姐妹、竞争者、分财、分享资源的人。</li>
+</ul>
+</li>
+<li><strong>地支</strong>：特别是日支，代表命主的配偶和亲密关系，同时也可以反映命主的交际圈。</li>
+<li><strong>五行</strong>：五行的生克关系也能影响命主的社交关系和人际网络。</li>
+</ol>
+<h3 id="分析方法-1">分析方法</h3>
+<ol>
+<li>
+<p><strong>看比肩和劫财星</strong>：</p>
+<ul>
+<li><strong>比肩</strong>：比肩星多，命主喜欢与朋友、同事合作，容易结交朋友，有较强的社交能力。</li>
+<li><strong>劫财</strong>：劫财星多，命主的朋友多半是竞争者，容易在朋友间产生冲突，但也能在竞争中结交知己。</li>
+</ul>
+</li>
+<li>
+<p><strong>看日支和其他地支</strong>：</p>
+<ul>
+<li><strong>日支</strong>：日支可以反映命主的交际圈和亲密关系。如果日支中藏有比肩或劫财，说明命主在交友方面较为活跃。</li>
+<li><strong>其他地支</strong>：年支、月支、时支中的比肩或劫财星也能反映命主的交友情况。</li>
+</ul>
+</li>
+<li>
+<p><strong>看五行生克</strong>：</p>
+<ul>
+<li>五行的生克关系影响命主的人际关系。例如，火旺的人通常热情开朗，木旺的人通常善良和蔼，金旺的人通常正直公正。</li>
+</ul>
+</li>
+<li>
+<p><strong>综合其他十神的影响</strong>：</p>
+<ul>
+<li><strong>官杀星</strong>：官杀星多，命主在交友中可能会有一些压力和竞争。</li>
+<li><strong>印星</strong>：印星多，命主容易得到朋友的支持和帮助。</li>
+<li><strong>财星</strong>：财星多，命主容易通过朋友获得财富或资源。</li>
+</ul>
+</li>
+</ol>
+<h3 id="具体步骤-1">具体步骤</h3>
+<ol>
+<li>
+<p><strong>确定日元强弱</strong>：</p>
+<ul>
+<li>查看日元所在月令（即月柱地支），判断其旺衰。</li>
+<li>查看命局中是否有生扶日元的印星、比劫，以及是否有克制日元的官杀星、财星、食伤星。</li>
+</ul>
+</li>
+<li>
+<p><strong>查看比肩和劫财星的位置和强弱</strong>：</p>
+<ul>
+<li>查看命局中比肩和劫财星的位置和力量，判断命主的交友情况。</li>
+<li>比肩和劫财星强旺，命主的朋友多，社交圈广，但可能会有竞争和冲突。</li>
+</ul>
+</li>
+<li>
+<p><strong>查看日支和其他地支</strong>：</p>
+<ul>
+<li>查看日支中是否有比肩或劫财星，判断命主的交际圈和亲密关系。</li>
+<li>查看年支、月支、时支中的比肩或劫财星，判断命主的交友情况。</li>
+</ul>
+</li>
+<li>
+<p><strong>综合其他十神和五行的影响</strong>：</p>
+<ul>
+<li>查看官杀星、印星、财星的位置和强弱，判断命主的人际关系和社交能力。</li>
+<li>综合五行的生克关系，判断命主的性格和交友特点。</li>
+</ul>
+</li>
+</ol>
+<h3 id="八看事业">八、看事业</h3>
+<p>在八字命理中，事业运势的分析是一个重要的内容。通过八字可以推算出一个人的职业倾向、事业发展、成就高低及其在事业上的挑战和机遇。主要通过以下几个方面来分析：</p>
+<h3 id="1-官星与事业">1. 官星与事业</h3>
+<p>官星在八字中直接关系到事业：</p>
+<ul>
+<li><strong>正官</strong>：代表正职、上司和权威，显示一个人的职位、名誉和社会地位。正官星多且强的人，通常事业心强，能够在职场上获得稳定和较高的职位。</li>
+<li><strong>七杀</strong>：代表偏职、挑战和竞争，显示一个人通过竞争和努力取得的事业成就。七杀星多且强的人，通常具有开创精神，敢于挑战，有较大的事业发展空间。</li>
+</ul>
+<h3 id="2-财星与事业">2. 财星与事业</h3>
+<p>财星与一个人的财富和物质生活有关，影响事业的发展：</p>
+<ul>
+<li><strong>正财</strong>：代表正当的收入和财务稳定，正财星旺的人，通常能够通过稳定的工作获得不错的收入。</li>
+<li><strong>偏财</strong>：代表意外之财和投资收益，偏财星旺的人，通常有较强的商业头脑和投资能力，适合从事商业和投资行业。</li>
+</ul>
+<h3 id="3-印星与事业">3. 印星与事业</h3>
+<p>印星代表学习、学历和贵人运，对事业发展有重要影响：</p>
+<ul>
+<li><strong>正印</strong>：代表学历、文凭和上司的提拔，正印星旺的人，通常能够通过学历和贵人的帮助在事业上取得成功。</li>
+<li><strong>偏印</strong>：代表特殊技能、智慧和灵感，偏印星旺的人，通常在专业技能和创造性工作中有较大的优势。</li>
+</ul>
+<h3 id="4-食伤星与事业">4. 食伤星与事业</h3>
+<p>食伤星代表一个人的表达能力、创造力和子女运：</p>
+<ul>
+<li><strong>食神</strong>：代表温和的表达和创造力，食神星旺的人，通常在艺术、教育和服务行业中有较大的发展。</li>
+<li><strong>伤官</strong>：代表激烈的表达和挑战权威，伤官星旺的人，通常在自由职业和创新行业中有较大的发展。</li>
+</ul>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://loveAtCorner.github.io/"><img src="/img/favicon.png" />YuTian Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2023/05/13/internal-network-penetration/" data-toggle="tooltip" data-placement="top" title="内网穿透">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2024/06/23/introducing-the-ner-technology/" data-toggle="tooltip" data-placement="top" title="实体命名识别技术介绍">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/llmsapi" title="llms,api">
+                            llms,api
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://caixiongjiang.github.io">caixiongjiang的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:leoyutian@yeah.net">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/loveAtCorner">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/tianyu271828">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="YuTian Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; YuTian Blog 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
