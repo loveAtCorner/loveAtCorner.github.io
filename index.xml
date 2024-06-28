@@ -13,7 +13,7 @@
       <link>https://loveAtCorner.github.io/2024/06/28/ollama/</link>
       <pubDate>Fri, 28 Jun 2024 00:00:00 +0000</pubDate>
       <guid>https://loveAtCorner.github.io/2024/06/28/ollama/</guid>
-      <description>如何使用ollama在本地启动服务 一. 下载 Ollama 安装文件 访问 https://ollama.com/download ，选择 Windows，单击 “Download for Windows (Preview)” 进行下载。 二.</description>
+      <description>ollama操作指南 一、如何在windows系统上安装 ollama 一.下载 Ollama 访问 https://ollama.com/download ，选择 Windows，单击 “Download for Windows (Preview)”</description>
     </item>
     <item>
       <title>大模型并发接口</title>
@@ -42,6 +42,13 @@
       <pubDate>Sun, 23 Jun 2024 00:00:00 +0000</pubDate>
       <guid>https://loveAtCorner.github.io/2024/06/23/introducing-the-ner-technology/</guid>
       <description>NER案例 例子：命名实体识别（NER） 假设我们有如下句子： &amp;#34;John lives in New York.&amp;#34; 目标是识别出句子中的命名实体，并将其标注为对应的标签。对于这个例子，我们</description>
+    </item>
+    <item>
+      <title>内网穿透</title>
+      <link>https://loveAtCorner.github.io/2023/05/13/internal-network-penetration/</link>
+      <pubDate>Sat, 13 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2023/05/13/internal-network-penetration/</guid>
+      <description>为什么需要内网穿透功能 从公网中访问自己的私有设备向来是一件难事儿。 自己的主力台式机、NAS等等设备，它们可能处于路由器后，或者运营商因为IP</description>
     </item>
     <item>
       <title>conda管理python环境</title>

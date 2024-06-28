@@ -10,20 +10,20 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="/img/2024-06-27-LLMs_asyn_api/LLMs_asyn_api.jpg">
-    <meta property="twitter:image" content="/img/2024-06-27-LLMs_asyn_api/LLMs_asyn_api.jpg" />
+    <meta property="og:image" content="/img/2023-05-13-internal-network-penetration/internal-Network-Penetration.png">
+    <meta property="twitter:image" content="/img/2023-05-13-internal-network-penetration/internal-Network-Penetration.png" />
     
 
     
-    <meta name="title" content="大模型并发接口" />
-    <meta property="og:title" content="大模型并发接口" />
-    <meta property="twitter:title" content="大模型并发接口" />
+    <meta name="title" content="内网穿透" />
+    <meta property="og:title" content="内网穿透" />
+    <meta property="twitter:title" content="内网穿透" />
     
 
     
-    <meta name="description" content="介绍并发接口的开发思路">
-    <meta property="og:description" content="介绍并发接口的开发思路" />
-    <meta property="twitter:description" content="介绍并发接口的开发思路" />
+    <meta name="description" content="使用frp进行内网穿透">
+    <meta property="og:description" content="使用frp进行内网穿透" />
+    <meta property="twitter:description" content="使用frp进行内网穿透" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="虞天, 虞天的博客, YuTian Blog, 博客, llms, 大模型, Kubernetes, 微服务, ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>大模型并发接口 | 虞天的博客 | YuTian Blog</title>
+    <title>内网穿透 | 虞天的博客 | YuTian Blog</title>
 
-    <link rel="canonical" href="/2024/06/27/LLMs_asyn_api/">
+    <link rel="canonical" href="/2023/05/13/internal-network-penetration/">
 
     
     
@@ -162,7 +162,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('/img/2024-06-27-LLMs_asyn_api/LLMs_asyn_api.jpg')
+        background-image: url('/img/2023-05-13-internal-network-penetration/internal-Network-Penetration.png')
     }
 </style>
 
@@ -174,12 +174,12 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/llmsapi" title="LLMs,api">
-                            LLMs,api
+                        <a class="tag" href="/tags/backend" title="backend">
+                            backend
                         </a>
                         
                     </div>
-                    <h1>大模型并发接口</h1>
+                    <h1>内网穿透</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -188,7 +188,7 @@
                                     &#34;虞天&#34;
                              
                             on 
-                            Thursday, June 27, 2024
+                            Saturday, May 13, 2023
                             
                             
                             
@@ -214,53 +214,182 @@
                 post-container">
 
                 
-                <h1 id="并发接口开发思路">并发接口开发思路</h1>
-<p>使用FastAPI编写一个并发接口非常简单，因为FastAPI本身是基于Python的异步框架——Starlette和Pydantic构建的。以下是一个简单的示例，展示了如何编写一个能够处理并发请求的接口。</p>
-<p>首先，确保你已经安装了FastAPI和Uvicorn：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip install fastapi uvicorn
-</span></span></code></pre></div><p>接下来，编写一个简单的FastAPI应用：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> fastapi <span style="color:#ff79c6">import</span> FastAPI, BackgroundTasks
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> asyncio
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>app <span style="color:#ff79c6">=</span> FastAPI()
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 定义一个异步任务</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">async_task</span>(duration: <span style="color:#8be9fd;font-style:italic">int</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">await</span> asyncio<span style="color:#ff79c6">.</span>sleep(duration)
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Task completed in </span><span style="color:#f1fa8c">{</span>duration<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> seconds&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>@app.get(<span style="color:#f1fa8c">&#34;/async-task&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">run_async_task</span>(duration: <span style="color:#8be9fd;font-style:italic">int</span>):
-</span></span><span style="display:flex;"><span>    result <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">await</span> async_task(duration)
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> {<span style="color:#f1fa8c">&#34;message&#34;</span>: result}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 定义一个后台任务</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">background_task</span>(message: <span style="color:#8be9fd;font-style:italic">str</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(<span style="color:#f1fa8c">&#34;log.txt&#34;</span>, <span style="color:#f1fa8c">&#34;a&#34;</span>) <span style="color:#ff79c6">as</span> log:
-</span></span><span style="display:flex;"><span>        log<span style="color:#ff79c6">.</span>write(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">{</span>message<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>@app.post(<span style="color:#f1fa8c">&#34;/background-task&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">run_background_task</span>(message: <span style="color:#8be9fd;font-style:italic">str</span>, background_tasks: BackgroundTasks):
-</span></span><span style="display:flex;"><span>    background_tasks<span style="color:#ff79c6">.</span>add_task(background_task, message)
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> {<span style="color:#f1fa8c">&#34;message&#34;</span>: <span style="color:#f1fa8c">&#34;Task added to background&#34;</span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 运行应用</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> __name__ <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;__main__&#34;</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">import</span> uvicorn
-</span></span><span style="display:flex;"><span>    uvicorn<span style="color:#ff79c6">.</span>run(app, host<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0.0.0.0&#34;</span>, port<span style="color:#ff79c6">=</span><span style="color:#bd93f9">8000</span>)
-</span></span></code></pre></div><p>这个示例包含两个接口：</p>
+                <h2 id="为什么需要内网穿透功能">为什么需要内网穿透功能</h2>
+<p><strong>从公网中访问自己的私有设备向来是一件难事儿。</strong><br>
+自己的主力台式机、NAS等等设备，它们可能处于路由器后，或者运营商因为IP地址短缺不给你分配公网IP地址。如果我们想直接访问到这些设备（远程桌面，远程文件，SSH等等），一般来说要通过一些转发或者P2P组网软件的帮助。<br>
+我有一台计算机位于一个很复杂的局域网中，我想要实现远程桌面和文件访问，目前来看其所处的网络环境很难通过简单的端口映射将其暴露在公网之中，我试过这么几种方法：</p>
 <ol>
-<li><code>/async-task</code>：这是一个异步接口，它调用一个异步任务并等待它完成。你可以通过向该接口传递一个持续时间参数来模拟异步任务的执行时间。</li>
-<li><code>/background-task</code>：这是一个后台任务接口，它使用FastAPI的<code>BackgroundTasks</code>来添加一个后台任务，任务会将传递的信息写入一个日志文件中。</li>
+<li>远程桌面使用TeamViewer。可用，但需要访问端也拥有TeamViewer软件，不是很方便，希望能使用Windows自带的远程桌面。且TeamViewer不易实现远程文件访问。</li>
+<li>使用蒲公英VPN软件进行组网，可用，但免费版本网络速度极慢，体验不佳，几乎无法正常使用。</li>
+<li>使用花生壳软件进行DDNS解析，可用，但同第二点所述，免费版本有带宽限制，无法实际使用。</li>
+<li><strong>搭建frp服务器进行内网穿透，可用且推荐，可以达到不错的速度，且理论上可以开放任何想要的端口，可以实现的功能远不止远程桌面或者文件共享。</strong></li>
 </ol>
-<p>你可以使用以下命令运行这个FastAPI应用：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>uvicorn your_module_name:app --reload
-</span></span></code></pre></div><p>运行应用后，你可以通过以下方式测试接口：</p>
+<h2 id="frp是什么">frp是什么</h2>
+<p>简单地说，<a href="https://sspai.com/link?target=https%3A%2F%2Fgithub.com%2Ffatedier%2Ffrp%2Fblob%2Fmaster%2FREADME_zh.md" title="frp">frp</a>就是一个<a href="https://sspai.com/link?target=https%3A%2F%2Fwww.zhihu.com%2Fquestion%2F24723688" title="反向代理软件">反向代理软件</a>，它体积轻量但功能很强大，可以<strong>使处于内网或防火墙后的设备对外界提供服务</strong>，它支持HTTP、TCP、UDP等众多协议。我们今天仅讨论TCP和UDP相关的内容。<br>
+截至本文完成，frp的最新版本为v0.22.0，本文使用最新版本。</p>
+<h2 id="准备工作">准备工作</h2>
+<p>搭建一个完整的frp服务链，我们需要</p>
 <ol>
-<li>访问<code>http://127.0.0.1:8000/async-task?duration=5</code>，这将触发一个持续5秒的异步任务。</li>
-<li>向<code>http://127.0.0.1:8000/background-task</code>发送POST请求，带上消息参数，这将触发一个后台任务，将消息写入日志文件。</li>
+<li>VPS一台（也可以是具有公网IP的实体机）</li>
+<li>访问目标设备（就是你最终要访问的设备）</li>
+<li>简单的Linux基础（会用cp等几个简单命令即可）</li>
 </ol>
-<p>这些示例展示了如何使用FastAPI处理并发请求，并发能力是通过Python的<code>asyncio</code>库实现的。FastAPI本身通过异步非阻塞的方式处理请求，使其能够高效处理大量并发请求。</p>
+<h3 id="vps相关">VPS相关</h3>
+<ul>
+<li>因为frp的原理是利用服务端（所准备的VPS）进行转发，因而VPS的速度直接决定了之后连接的质量，请根据自己的需要选择相应主机配置。</li>
+<li>我使用了DigitalOcean的新加坡机房，北京移动、中国教育网下测试速度尚可。</li>
+<li>系统使用Ubuntu 16.04.5 x64，frp客户端和服务端本身同时均支持Linux和Windows，且配置方法一样，请根据实际环境自行测试，如果你是新建的VPS，那选择Ubuntu 16.04.5 x64就可以了。</li>
+</ul>
+<h2 id="服务端设置">服务端设置</h2>
+<p>SSH连接到VPS之后运行如下命令查看处理器架构，根据架构下载不同版本的frp<br>
+<code>arch</code><br>
+查看结果，如果是“X86_64“即可选择”amd64”，<br>
+运行如下命令，根据架构不同，选择相应版本并进行下载<br>
+<code>wget https://github.com/fatedier/frp/releases/download/v0.22.0/frp_0.22.0_linux_amd64.tar.gz</code><br>
+然后解压<br>
+<code>tar -zxvf frp_0.22.0_linux_amd64.tar.gz</code><br>
+文件夹改个名，方便使用<br>
+<code>cp -r frp_0.22.0_linux_amd64 frp</code><br>
+把解压出来的文件夹复制到你想要的目录下，为了方便我直接放在用户目录下了，进入该目录<br>
+<code>cd frp</code><br>
+查看一下文件<br>
+<code>ls -a</code><br>
+我们只需要关注如下几个文件</p>
+<ul>
+<li>frps</li>
+<li>frps.ini</li>
+<li>frpc</li>
+<li>frpc.ini</li>
+</ul>
+<p>前两个文件（s结尾代表server）分别是服务端程序和服务端配置文件，后两个文件（c结尾代表client）分别是客户端程序和客户端配置文件。<br>
+因为我们正在配置服务端，可以删除客户端的两个文件<br>
+<code>rm frpc</code><br>
+<code>rm frpc.ini</code><br>
+然后修改frps.ini文件<br>
+<code>vim frps.ini</code><br>
+这个文件应有如下格式</p>
+<pre tabindex="0"><code>[common]
+bind_port = 7000
+dashboard_port = 7500
+token = 12345678
+dashboard_user = admin
+dashboard_pwd = admin
+vhost_http_port = 10080
+vhost_https_port = 10443
+</code></pre><blockquote>
+<p>如果没有必要，端口均可使用默认值，token、user和password项请自行设置。</p>
+</blockquote>
+<ul>
+<li>“bind_port”表示用于客户端和服务端连接的端口，这个端口号我们之后在配置客户端的时候要用到。</li>
+<li>“dashboard_port”是服务端仪表板的端口，若使用7500端口，在配置完成服务启动后可以通过浏览器访问 x.x.x.x:7500 （其中x.x.x.x为VPS的IP）查看frp服务运行信息。</li>
+<li>“token”是用于客户端和服务端连接的口令，请自行设置并记录，稍后会用到。</li>
+<li>“dashboard_user”和“dashboard_pwd”表示打开仪表板页面登录的用户名和密码，自行设置即可。</li>
+<li>“vhost_http_port”和“vhost_https_port”用于反向代理HTTP主机时使用，本文不涉及HTTP协议，因而照抄或者删除这两条均可。</li>
+</ul>
+<p>编辑完成后保存（vim保存如果不会请自行搜索）。<br>
+之后我们就可以运行frps的服务端了<br>
+<code>./frps -c frps.ini</code><br>
+如果看到屏幕输出这样一段内容，即表示运行正常，如果出现错误提示，请检查上面的步骤。</p>
+<pre tabindex="0"><code>2019/01/12 15:22:39 [I] [service.go:130] frps tcp listen on 0.0.0.0:7000
+2019/01/12 15:22:39 [I] [service.go:172] http service listen on 0.0.0.0:10080
+2019/01/12 15:22:39 [I] [service.go:193] https service listen on 0.0.0.0:10443
+2019/01/12 15:22:39 [I] [service.go:216] Dashboard listen on 0.0.0.0:7500
+2019/01/12 15:22:39 [I] [root.go:210] Start frps success
+</code></pre><p>此时访问 x.x.x.x:7500 并使用自己设置的用户名密码登录，即可看到仪表板界面</p>
+<p>
+  <img src="/img/2023-05-13-Internal-network-penetration/instrument_interface.png" alt="仪表界面">
+
+</p>
+<h2 id="服务端后台运行">服务端后台运行</h2>
+<p>至此，我们的服务端仅运行在前台，如果Ctrl+C停止或者关闭SSH窗口后，frps均会停止运行，因而我们使用 <a href="https://sspai.com/link?target=https%3A%2F%2Fehlxr.me%2F2017%2F01%2F18%2FLinux-%25E7%259A%2584-nohup-%25E5%2591%25BD%25E4%25BB%25A4%25E7%259A%2584%25E7%2594%25A8%25E6%25B3%2595%2F" title="nohup命令">nohup命令</a>将其运行在后台。</p>
+<blockquote>
+<p>nohup后台程序管理或关闭相关命令可自行查询资料，上面这个连接中也有所提及。</p>
+</blockquote>
+<p><code>nohup ./frps -c frps.ini &amp;</code><br>
+输出如下内容即表示正常运行</p>
+<pre tabindex="0"><code>nohup: ignoring input and appending output to &#39;nohup.out&#39;
+</code></pre><p>此时可先使用Ctrl+C关闭nohup，frps依然会在后台运行，使用jobs命令查看后台运行的程序<br>
+<code>jobs</code><br>
+在结果中我们可以看到frps正在后台正常运行</p>
+<pre tabindex="0"><code>[1]+  Running                 nohup ./frps -c frps.ini &amp;
+</code></pre><p>此时访问 x.x.x.x:7500 依然可以打开仪表板界面，至此，服务端即设置完成，你可以关闭SSH窗口了。</p>
+<h2 id="客户端设置">客户端设置</h2>
+<blockquote>
+<p>frp的客户端就是我们想要真正进行访问的那台设备，大多数情况下应该会是一台Windows主机，因而本文使用Windows主机做例子；Linux配置方法类似，不再赘述。</p>
+</blockquote>
+<p>同样地，根据客户端设备的情况选择相应的frp程序进行<a href="https://sspai.com/link?target=https%3A%2F%2Fgithub.com%2Ffatedier%2Ffrp%2Freleases" title="下载">下载</a>，Windows下下载和解压等步骤不再描述。<br>
+假定你下载了“frp_0.22.0_windows_amd64.zip”，将其解压在了C盘根目录下，并且将文件夹重命名为“frp”，可以删除其中的frps和frps.ini文件。<br>
+用文本编辑器打开frpc.ini，与服务端类似，内容如下。</p>
+<pre tabindex="0"><code>[common]
+server_addr = x.x.x.x
+server_port = 7000
+token = won517574356
+[rdp]
+type = tcp
+local_ip = 127.0.0.1           
+local_port = 3389
+remote_port = 7001  
+[smb]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 445
+remote_port = 7002
+</code></pre><p>其中common字段下的三项即为服务端的设置。</p>
+<ul>
+<li>“server_addr”为服务端IP地址，填入即可。</li>
+<li>“server_port”为服务器端口，填入你设置的端口号即可，如果未改变就是7000</li>
+<li>“token”是你在服务器上设置的连接口令，原样填入即可。</li>
+</ul>
+<h2 id="自定义规则">自定义规则</h2>
+<p>frp实际使用时，会按照端口号进行对应的转发，原理如下图所示。</p>
+<p>
+  <img src="/img/2023-05-13-Internal-network-penetration/frp_principle.jpg" alt="frp的原理">
+
+</p>
+<p>frp的原理</p>
+<p>上面frpc.ini的rdp、smb字段都是自己定义的规则，自定义端口对应时格式如下。</p>
+<ul>
+<li>“[xxx]”表示一个规则名称，自己定义，便于查询即可。</li>
+<li>“type”表示转发的协议类型，有TCP和UDP等选项可以选择，如有需要请自行查询frp手册。</li>
+<li>“local_port”是本地应用的端口号，按照实际应用工作在本机的端口号填写即可。</li>
+<li>“remote_port”是该条规则在服务端开放的端口号，自己填写并记录即可。</li>
+</ul>
+<blockquote>
+<p>RDP，即Remote Desktop 远程桌面，Windows的RDP默认端口是3389，协议为TCP，建议使用frp远程连接前，在局域网中测试好，能够成功连接后再使用frp穿透连接。</p>
+<p>SMB，即Windows文件共享所使用的协议，默认端口号445，协议TCP，本条规则可实现远程文件访问。</p>
+</blockquote>
+<p>配置完成frpc.ini后，就可以运行frpc了</p>
+<blockquote>
+<p>frpc程序不能直接双击运行！</p>
+</blockquote>
+<p>使用命令提示符或Powershell进入该目录下<br>
+<code>cd C:\frp</code><br>
+并执行<br>
+<code>./frpc -c frpc.ini</code><br>
+运行frpc程序，窗口中输出如下内容表示运行正常。</p>
+<pre tabindex="0"><code>2019/01/12 16:14:56 [I] [service.go:205] login to server success, get run id [2b65b4e58a5917ac], server udp port [0]
+2019/01/12 16:14:56 [I] [proxy_manager.go:136] [2b65b4e58a5917ac] proxy added: [rdp smb]
+2019/01/12 16:14:56 [I] [control.go:143] [smb] start proxy success
+2019/01/12 16:14:56 [I] [control.go:143] [rdp] start proxy success
+</code></pre><p>不要关闭命令行窗口，此时可以在局域网外使用相应程序访问 x.x.x.x:xxxx （IP为VPS的IP，端口为自定义的remote_port）即可访问到相应服务。</p>
+<h2 id="客户端后台运行及开机自启">客户端后台运行及开机自启</h2>
+<p>frpc运行时始终有一个命令行窗口运行在前台，影响美观，我们可以使用一个批处理文件来将其运行在后台，而且可以双击执行，每次打开frpc不用再自己输命令了。<br>
+在任何一个目录下新建一个文本文件并将其重命名为“frpc.bat”，编辑，粘贴如下内容并保存。</p>
+<pre tabindex="0"><code>@echo off
+if &#34;%1&#34; == &#34;h&#34; goto begin
+mshta vbscript:createobject(&#34;wscript.shell&#34;).run(&#34;&#34;&#34;%~nx0&#34;&#34; h&#34;,0)(window.close)&amp;&amp;exit
+:begin
+REM
+cd C:\frp
+frpc -c frpc.ini
+exit
+</code></pre><blockquote>
+<p>将cd后的路径更改为你的frpc实际存放的目录。</p>
+</blockquote>
+<p>之后直接运行这个 .bat 文件即可启动frpc并隐藏窗口（可在任务管理器中退出）。<br>
+至于开机启动，把这个 .bat 文件直接扔进Windows的开机启动文件夹就好了 :)<br>
+至此，客户端配置完成，之后就是你自己根据需要在frpc.ini后追加规则即可。<br>
+强烈建议你在使用frp直接测试内网穿透前，先在局域网内测试好相关功能的正常使用，并配置好可能会影响的Windows防火墙等内容，在内网调试通过后再使用frp进行内网穿透测试。</p>
 
 
                 
@@ -310,13 +439,13 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2024/06/26/LLMs_api/" data-toggle="tooltip" data-placement="top" title="大模型接口">&larr;
+                        <a href="/2023/05/11/introducing-conda/" data-toggle="tooltip" data-placement="top" title="conda管理python环境">&larr;
                             Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2024/06/28/ollama/" data-toggle="tooltip" data-placement="top" title="ollama实操">Next
+                        <a href="/2024/06/23/introducing-the-ner-technology/" data-toggle="tooltip" data-placement="top" title="实体命名识别技术介绍">Next
                             Post &rarr;</a>
                     </li>
                     

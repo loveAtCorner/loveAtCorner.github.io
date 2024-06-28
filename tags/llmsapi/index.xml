@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>LLMs on YuTian Blog</title>
-    <link>https://loveAtCorner.github.io/tags/llms/</link>
-    <description>Recent content in LLMs on YuTian Blog</description>
+    <title>LLMs,api on YuTian Blog</title>
+    <link>https://loveAtCorner.github.io/tags/llmsapi/</link>
+    <description>Recent content in LLMs,api on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 28 Jun 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://loveAtCorner.github.io/tags/llms/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://loveAtCorner.github.io/tags/llmsapi/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ollama实操</title>
       <link>https://loveAtCorner.github.io/2024/06/28/ollama/</link>
       <pubDate>Fri, 28 Jun 2024 00:00:00 +0000</pubDate>
       <guid>https://loveAtCorner.github.io/2024/06/28/ollama/</guid>
-      <description>如何使用ollama在本地启动服务 一. 下载 Ollama 安装文件 访问 https://ollama.com/download ，选择 Windows，单击 “Download for Windows (Preview)” 进行下载。 二.</description>
+      <description>ollama操作指南 一、如何在windows系统上安装 ollama 一.下载 Ollama 访问 https://ollama.com/download ，选择 Windows，单击 “Download for Windows (Preview)”</description>
     </item>
     <item>
       <title>大模型并发接口</title>
