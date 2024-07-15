@@ -6,8 +6,15 @@
     <description>Recent content on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 15 Jul 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://loveAtCorner.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>大模型衍生工具————代码翻译</title>
+      <link>https://loveAtCorner.github.io/2024/07/15/LLMs_tools_code_interpreter/</link>
+      <pubDate>Mon, 15 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/07/15/LLMs_tools_code_interpreter/</guid>
+      <description>源码解析工具 工具介绍 核心功能——源代码翻译 脚本级别的功能概括 函数/类级别的功能枚举 使用方法 前置条件 vllms框架启动的 qwen1.5-32b</description>
+    </item>
     <item>
       <title>ollama实操</title>
       <link>https://loveAtCorner.github.io/2024/06/28/ollama/</link>
@@ -76,7 +83,7 @@
       <link>https://loveAtCorner.github.io/notes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://loveAtCorner.github.io/notes/</guid>
-      <description>顶级英文期刊 IEEE Transactions on Pattern Analysis and Machine Intelligence JCR官方网站 小木虫期刊 顶级中文期刊 中国期刊全文数据库</description>
+      <description>免费服务 大模型语言模型对话窗口 自研工具 源码翻译工具 文献查询地址 英文期刊 IEEE Transactions on Pattern Analysis and Machine Intelligence JCR官方网站 中文期刊 中国期刊全文数据库 小木虫期刊</description>
     </item>
     <item>
       <title></title>
