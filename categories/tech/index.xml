@@ -16,18 +16,25 @@
       <description>源码解析工具 工具介绍 核心功能——源代码翻译 脚本级别的功能概括 函数/类级别的功能枚举 使用方法 前置条件 vllms框架启动的 qwen1.5-32b</description>
     </item>
     <item>
+      <title>大模型衍生工具————多轮对话接口</title>
+      <link>https://loveAtCorner.github.io/2024/07/15/LLMs_tools_code_interpreter/</link>
+      <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/07/15/LLMs_tools_code_interpreter/</guid>
+      <description>源码解析工具 工具介绍 核心功能——源代码翻译 脚本级别的功能概括 函数/类级别的功能枚举 使用方法 前置条件 vllms框架启动的 qwen1.5-32b</description>
+    </item>
+    <item>
+      <title>vllm实操</title>
+      <link>https://loveAtCorner.github.io/2024/07/01/vllm/</link>
+      <pubDate>Mon, 01 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/07/01/vllm/</guid>
+      <description>vllm操作指南 一、构建基础镜像 dockerhub下载地址 docker pull vllm/vllm-openai:v0.5.3 二. 下载模型参数 在电脑可以访问外网的前提下，建议使用 pycrawlers ，从 huggingface 下载模型参数，下</description>
+    </item>
+    <item>
       <title>ollama实操</title>
       <link>https://loveAtCorner.github.io/2024/06/28/ollama/</link>
       <pubDate>Fri, 28 Jun 2024 00:00:00 +0000</pubDate>
       <guid>https://loveAtCorner.github.io/2024/06/28/ollama/</guid>
       <description>ollama操作指南 一、如何在windows系统上安装 ollama 一.下载 Ollama 访问 https://ollama.com/download ，选择 Windows，单击 “Download for Windows (Preview)”</description>
-    </item>
-    <item>
-      <title>大模型并发接口</title>
-      <link>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</link>
-      <pubDate>Thu, 27 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/06/27/LLMs_asyn_api/</guid>
-      <description>并发接口开发思路 使用FastAPI编写一个并发接口非常简单，因为FastAPI本身是基于Python的异步框架——Starlette和Pyd</description>
     </item>
     <item>
       <title>大模型接口</title>

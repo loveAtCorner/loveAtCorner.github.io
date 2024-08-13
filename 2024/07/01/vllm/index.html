@@ -10,20 +10,20 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="/img/2024-06-27-LLMs_asyn_api/LLMs_asyn_api.jpg">
-    <meta property="twitter:image" content="/img/2024-06-27-LLMs_asyn_api/LLMs_asyn_api.jpg" />
+    <meta property="og:image" content="/img/2024-07-01-vllm/vllm.png">
+    <meta property="twitter:image" content="/img/2024-07-01-vllm/vllm.png" />
     
 
     
-    <meta name="title" content="大模型并发接口" />
-    <meta property="og:title" content="大模型并发接口" />
-    <meta property="twitter:title" content="大模型并发接口" />
+    <meta name="title" content="vllm实操" />
+    <meta property="og:title" content="vllm实操" />
+    <meta property="twitter:title" content="vllm实操" />
     
 
     
-    <meta name="description" content="介绍并发接口的开发思路">
-    <meta property="og:description" content="介绍并发接口的开发思路" />
-    <meta property="twitter:description" content="介绍并发接口的开发思路" />
+    <meta name="description" content="介绍了vllm项目的部署和使用">
+    <meta property="og:description" content="介绍了vllm项目的部署和使用" />
+    <meta property="twitter:description" content="介绍了vllm项目的部署和使用" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="虞天, 虞天的博客, YuTian Blog, 博客, llms, 大模型, Kubernetes, 微服务, ">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>大模型并发接口 | 虞天的博客 | YuTian Blog</title>
+    <title>vllm实操 | 虞天的博客 | YuTian Blog</title>
 
-    <link rel="canonical" href="/2024/06/27/LLMs_asyn_api/">
+    <link rel="canonical" href="/2024/07/01/vllm/">
 
     
     
@@ -162,7 +162,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('/img/2024-06-27-LLMs_asyn_api/LLMs_asyn_api.jpg')
+        background-image: url('/img/2024-07-01-vllm/vllm.png')
     }
 </style>
 
@@ -179,7 +179,7 @@
                         </a>
                         
                     </div>
-                    <h1>大模型并发接口</h1>
+                    <h1>vllm实操</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -188,7 +188,7 @@
                                     &#34;虞天&#34;
                              
                             on 
-                            Thursday, June 27, 2024
+                            Monday, July 1, 2024
                             
                             
                             
@@ -214,54 +214,78 @@
                 post-container">
 
                 
-                <h1 id="并发接口开发思路">并发接口开发思路</h1>
-<p>使用FastAPI编写一个并发接口非常简单，因为FastAPI本身是基于Python的异步框架——Starlette和Pydantic构建的。以下是一个简单的示例，展示了如何编写一个能够处理并发请求的接口。</p>
-<p>首先，确保你已经安装了FastAPI和Uvicorn：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip install fastapi uvicorn
-</span></span></code></pre></div><p>接下来，编写一个简单的FastAPI应用：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> fastapi <span style="color:#ff79c6">import</span> FastAPI, BackgroundTasks
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> asyncio
+                <h1 id="vllm操作指南">vllm操作指南</h1>
+<h2 id="一构建基础镜像">一、构建基础镜像</h2>
+<p><a href="https://hub.docker.com/r/vllm/vllm-openai/tags">dockerhub下载地址</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker pull vllm/vllm-openai:v0.5.3
+</span></span></code></pre></div><h2 id="二-下载模型参数">二. 下载模型参数</h2>
+<p>在电脑可以访问外网的前提下，建议使用 pycrawlers ，从 huggingface 下载模型参数，下载稳定</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> pycrawlers <span style="color:#ff79c6">import</span> huggingface
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>app <span style="color:#ff79c6">=</span> FastAPI()
+</span></span><span style="display:flex;"><span>token<span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;qfOJkIITIpQSKXaUENdhhgxAVPyAxgjRPFJokpveoWYYJjNckibajPdZyuLzMhOITZUYvFyAkGyVhlsQyZEsYcQkUJzevLlmbYZnjYAhSrHwSrKKkyezozABvgUYurza&#39;</span>
+</span></span><span style="display:flex;"><span>hg <span style="color:#ff79c6">=</span> huggingface(token<span style="color:#ff79c6">=</span>token)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 定义一个异步任务</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">async_task</span>(duration: <span style="color:#8be9fd;font-style:italic">int</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">await</span> asyncio<span style="color:#ff79c6">.</span>sleep(duration)
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;Task completed in </span><span style="color:#f1fa8c">{</span>duration<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c"> seconds&#34;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;https://huggingface.co/Qwen/Qwen2-7B-Instruct/tree/main&#39;</span>
+</span></span><span style="display:flex;"><span>hg<span style="color:#ff79c6">.</span>get_data(url)
+</span></span></code></pre></div><p>如果不能访问外网，建议使用 SDK，从 modelscope 下载模型参数，相对稳定</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">from</span> modelscope <span style="color:#ff79c6">import</span> snapshot_download 
+</span></span><span style="display:flex;"><span>model_dir <span style="color:#ff79c6">=</span> snapshot_download(<span style="color:#f1fa8c">&#39;qwen/Qwen2-7B-Instruct&#39;</span>)
+</span></span></code></pre></div><h2 id="三-启动api服务">三. 启动API服务</h2>
+<p>建议将常用命令写入shell脚本</p>
+<p>run.sh</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -d --gpus <span style="color:#f1fa8c">&#39;&#34;device=0&#34;&#39;</span> -p 11434:8000 --name Qwen2-7B-Instruct -v E:<span style="color:#f1fa8c">\m</span>odels<span style="color:#f1fa8c">\Q</span>wen2-7B-Instruct:/models/main vllm/vllm-openai:v0.4.1 --served-model-name Qwen2-7B-Instruct --model /models/main --max-model-len <span style="color:#bd93f9">4096</span> --gpu-memory-utilization 0.95 --port <span style="color:#bd93f9">8000</span> --trust-remote-code
+</span></span></code></pre></div><p>log.sh</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker rm -f Qwen2-7B-Instruct
+</span></span></code></pre></div><p>log.sh</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker logs -f Qwen2-7B-Instruct
+</span></span></code></pre></div><h2 id="四调用服务">四、调用服务</h2>
+<p>shell命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -X POST http://0.0.0.0:8000/v1/chat/completions <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>-H <span style="color:#f1fa8c">&#34;User-Agent: Apifox/1.0.0 (https://apifox.com)&#34;</span> <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>-H <span style="color:#f1fa8c">&#34;Content-Type: application/json&#34;</span> <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>-d <span style="color:#f1fa8c">&#39;{
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;model&#34;: &#34;Qwen2-7B-Instruct&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;messages&#34;: [
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        {   &#34;role&#34;: &#34;system&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">            &#34;content&#34;: &#34;你是一名善解人意的小管家&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        },
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        {
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">            &#34;role&#34;: &#34;user&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">            &#34;content&#34;: &#34;去银川旅行怎么安排行程？&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">        }
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    ],
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;temperature&#34;: 0
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">}&#39;</span>
+</span></span></code></pre></div><p>python脚本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> requests
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>@app.get(<span style="color:#f1fa8c">&#34;/async-task&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">run_async_task</span>(duration: <span style="color:#8be9fd;font-style:italic">int</span>):
-</span></span><span style="display:flex;"><span>    result <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">await</span> async_task(duration)
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> {<span style="color:#f1fa8c">&#34;message&#34;</span>: result}
+</span></span><span style="display:flex;"><span>url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;http://0.0.0.0:8000/v1/chat/completions&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 定义请求头</span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#39;User-Agent&#39;</span>: <span style="color:#f1fa8c">&#39;Apifox/1.0.0 (https://apifox.com)&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#39;Content-Type&#39;</span>: <span style="color:#f1fa8c">&#39;application/json&#39;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 定义请求的数据</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#ff79c6">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;model&#34;</span>: <span style="color:#f1fa8c">&#34;Qwen2-7B-Instruct&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;messages&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {   <span style="color:#f1fa8c">&#34;role&#34;</span>: <span style="color:#f1fa8c">&#34;system&#34;</span>, 
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;content&#34;</span>: <span style="color:#f1fa8c">&#34;你是一名善解人意的小管家&#34;</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;role&#34;</span>: <span style="color:#f1fa8c">&#34;user&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f1fa8c">&#34;content&#34;</span>: <span style="color:#f1fa8c">&#34;去银川旅行怎么安排行程？&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;temperature&#34;</span>: <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 定义一个后台任务</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">background_task</span>(message: <span style="color:#8be9fd;font-style:italic">str</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">with</span> <span style="color:#8be9fd;font-style:italic">open</span>(<span style="color:#f1fa8c">&#34;log.txt&#34;</span>, <span style="color:#f1fa8c">&#34;a&#34;</span>) <span style="color:#ff79c6">as</span> log:
-</span></span><span style="display:flex;"><span>        log<span style="color:#ff79c6">.</span>write(<span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">{</span>message<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>@app.post(<span style="color:#f1fa8c">&#34;/background-task&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">async</span> <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">run_background_task</span>(message: <span style="color:#8be9fd;font-style:italic">str</span>, background_tasks: BackgroundTasks):
-</span></span><span style="display:flex;"><span>    background_tasks<span style="color:#ff79c6">.</span>add_task(background_task, message)
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> {<span style="color:#f1fa8c">&#34;message&#34;</span>: <span style="color:#f1fa8c">&#34;Task added to background&#34;</span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 运行应用</span>
-</span></span><span style="display:flex;"><span><span style="color:#ff79c6">if</span> __name__ <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;__main__&#34;</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">import</span> uvicorn
-</span></span><span style="display:flex;"><span>    uvicorn<span style="color:#ff79c6">.</span>run(app, host<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;0.0.0.0&#34;</span>, port<span style="color:#ff79c6">=</span><span style="color:#bd93f9">8000</span>)
-</span></span></code></pre></div><p>这个示例包含两个接口：</p>
-<ol>
-<li><code>/async-task</code>：这是一个异步接口，它调用一个异步任务并等待它完成。你可以通过向该接口传递一个持续时间参数来模拟异步任务的执行时间。</li>
-<li><code>/background-task</code>：这是一个后台任务接口，它使用FastAPI的<code>BackgroundTasks</code>来添加一个后台任务，任务会将传递的信息写入一个日志文件中。</li>
-</ol>
-<p>你可以使用以下命令运行这个FastAPI应用：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>uvicorn your_module_name:app --reload
-</span></span></code></pre></div><p>运行应用后，你可以通过以下方式测试接口：</p>
-<ol>
-<li>访问<code>http://127.0.0.1:8000/async-task?duration=5</code>，这将触发一个持续5秒的异步任务。</li>
-<li>向<code>http://127.0.0.1:8000/background-task</code>发送POST请求，带上消息参数，这将触发一个后台任务，将消息写入日志文件。</li>
-</ol>
-<p>这些示例展示了如何使用FastAPI处理并发请求，并发能力是通过Python的<code>asyncio</code>库实现的。FastAPI本身通过异步非阻塞的方式处理请求，使其能够高效处理大量并发请求。</p>
-
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 发送 POST 请求</span>
+</span></span><span style="display:flex;"><span>response <span style="color:#ff79c6">=</span> requests<span style="color:#ff79c6">.</span>post(url, headers<span style="color:#ff79c6">=</span>headers, json<span style="color:#ff79c6">=</span>data)
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># 打印响应内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response<span style="color:#ff79c6">.</span>status_code)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">print</span>(response<span style="color:#ff79c6">.</span>text)
+</span></span></code></pre></div>
 
                 
                 
@@ -310,13 +334,13 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2024/06/26/LLMs_api/" data-toggle="tooltip" data-placement="top" title="大模型接口">&larr;
+                        <a href="/2024/06/28/ollama/" data-toggle="tooltip" data-placement="top" title="ollama实操">&larr;
                             Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2024/06/28/ollama/" data-toggle="tooltip" data-placement="top" title="ollama实操">Next
+                        <a href="/2024/07/15/LLMs_tools_code_interpreter/" data-toggle="tooltip" data-placement="top" title="大模型衍生工具————多轮对话接口">Next
                             Post &rarr;</a>
                     </li>
                     
