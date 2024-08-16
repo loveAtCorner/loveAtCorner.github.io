@@ -16,11 +16,11 @@
       <description>源码解析工具 工具介绍 核心功能——源代码翻译 脚本级别的功能概括 函数/类级别的功能枚举 使用方法 前置条件 vllms框架启动的 qwen1.5-32b</description>
     </item>
     <item>
-      <title>大模型衍生工具————多轮对话接口</title>
-      <link>https://loveAtCorner.github.io/2024/07/15/LLMs_tools_code_interpreter/</link>
+      <title>大模型衍生工具————代理接口</title>
+      <link>https://loveAtCorner.github.io/2024/07/03/LLMs_proxy/</link>
       <pubDate>Wed, 03 Jul 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/07/15/LLMs_tools_code_interpreter/</guid>
-      <description>源码解析工具 工具介绍 核心功能——源代码翻译 脚本级别的功能概括 函数/类级别的功能枚举 使用方法 前置条件 vllms框架启动的 qwen1.5-32b</description>
+      <guid>https://loveAtCorner.github.io/2024/07/03/LLMs_proxy/</guid>
+      <description>基于令牌的API代理服务器 这个基于Flask的应用程序是一个代理服务器，设计用于管理和路由到大型语言模型（LLM）API的请求，具备基于令牌</description>
     </item>
     <item>
       <title>vllm实操</title>
