@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LLMs on YuTian Blog</title>
+    <link>https://loveAtCorner.github.io/tags/llms/</link>
+    <description>Recent content in LLMs on YuTian Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 26 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://loveAtCorner.github.io/tags/llms/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>认识大模型</title>
+      <link>https://loveAtCorner.github.io/2024/06/26/LLMs/</link>
+      <pubDate>Wed, 26 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/06/26/LLMs/</guid>
+      <description>理解大模型：超越传统思维的变革 在谈到大模型的训练和应用时，许多人常常将其与传统的数据存储方式相混淆，认为大模型的训练类似于将数据存入硬盘中，</description>
+    </item>
+  </channel>
+</rss>

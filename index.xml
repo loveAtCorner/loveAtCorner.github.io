@@ -38,10 +38,17 @@
     </item>
     <item>
       <title>大模型接口</title>
-      <link>https://loveAtCorner.github.io/2024/06/26/LLMs_api/</link>
-      <pubDate>Wed, 26 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/06/26/LLMs_api/</guid>
+      <link>https://loveAtCorner.github.io/2024/06/27/LLMs_api/</link>
+      <pubDate>Thu, 27 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/06/27/LLMs_api/</guid>
       <description>开发大模型API接口开发思路 第一步、调用开源模型 开源大模型 from transformers import AutoModelForCausalLM, AutoTokenizer from transformers.generation import GenerationConfig model_path = os.path.join(current_path, &amp;#34;models/Qwen-7B-Chat&amp;#34;) # Model names: &amp;#34;Qwen/Qwen-7B-Chat&amp;#34;, &amp;#34;Qwen/Qwen-14B-Chat&amp;#34; tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True) # use bf16 # model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&amp;#34;auto&amp;#34;, trust_remote_code=True, bf16=True).eval() # use fp16 # model = AutoModelForCausalLM.from_pretrained(model_path, device_map=&amp;#34;auto&amp;#34;, trust_remote_code=True,</description>
+    </item>
+    <item>
+      <title>认识大模型</title>
+      <link>https://loveAtCorner.github.io/2024/06/26/LLMs/</link>
+      <pubDate>Wed, 26 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/06/26/LLMs/</guid>
+      <description>理解大模型：超越传统思维的变革 在谈到大模型的训练和应用时，许多人常常将其与传统的数据存储方式相混淆，认为大模型的训练类似于将数据存入硬盘中，</description>
     </item>
     <item>
       <title>Firefly</title>
