@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cuda on YuTian Blog</title>
+    <link>https://loveAtCorner.github.io/tags/cuda/</link>
+    <description>Recent content in Cuda on YuTian Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 02 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://loveAtCorner.github.io/tags/cuda/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cuda——一种通用计算平台和编程模型</title>
+      <link>https://loveAtCorner.github.io/2024/08/02/introduce_to_cuda/</link>
+      <pubDate>Fri, 02 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/08/02/introduce_to_cuda/</guid>
+      <description>名词解释 CUDA（Compute Unified Device Architecture）： CUDA是由英伟达（NVIDIA）为其GPU（图形处理单元）创建的一种通用计</description>
+    </item>
+  </channel>
+</rss>
