@@ -6,8 +6,22 @@
     <description>Recent content in Tech on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 04 Aug 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://loveAtCorner.github.io/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agent技术细节</title>
+      <link>https://loveAtCorner.github.io/2024/08/04/LLMs_agents_tech_details/</link>
+      <pubDate>Sun, 04 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/08/04/LLMs_agents_tech_details/</guid>
+      <description>agent的底层实现原理 LLM App的架构，究其本质，是生物性的发展过程和整体类比的结果，将LLM进行类脑比较，定位为整体中枢，进行分工合作。 第</description>
+    </item>
+    <item>
+      <title>Agent 通用创作思路</title>
+      <link>https://loveAtCorner.github.io/2024/08/03/LLMs_agents/</link>
+      <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/08/03/LLMs_agents/</guid>
+      <description>Agent的架构 Agent 可大致被定义为如下图所示的系统：Agents = LLM + memory + planning skills + tool use Planning 拆解子目标和任务分解：Agent能够将大型任务分解为较小</description>
+    </item>
     <item>
       <title>cuda——一种通用计算平台和编程模型</title>
       <link>https://loveAtCorner.github.io/2024/08/02/introduce_to_cuda/</link>

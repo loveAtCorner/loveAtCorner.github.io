@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="YuTian Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="/img/2024-08-04-LLMs_agents_tech_details/otter.png">
+    <meta property="twitter:image" content="/img/2024-08-04-LLMs_agents_tech_details/otter.png" />
+    
+
+    
+    <meta name="title" content="Agent技术细节" />
+    <meta property="og:title" content="Agent技术细节" />
+    <meta property="twitter:title" content="Agent技术细节" />
+    
+
+    
+    <meta name="description" content="介绍了论文中前沿agent技术细节">
+    <meta property="og:description" content="介绍了论文中前沿agent技术细节" />
+    <meta property="twitter:description" content="介绍了论文中前沿agent技术细节" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="虞天, 虞天的博客, YuTian Blog, 博客, llms, 大模型, Kubernetes, 微服务, ">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Agent技术细节 | 虞天的博客 | YuTian Blog</title>
+
+    <link rel="canonical" href="/2024/08/04/LLMs_agents_tech_details/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">YuTian Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes//">NOTES</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/2024-08-04-LLMs_agents_tech_details/otter.png')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/llms-agent" title="LLMs, agent">
+                            LLMs, agent
+                        </a>
+                        
+                    </div>
+                    <h1>Agent技术细节</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;虞天&#34;
+                             
+                            on 
+                            Sunday, August 4, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="agent的底层实现原理">agent的底层实现原理</h1>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/the_anatomy_of_autonomy.png" alt="自动化解剖图">
+
+</p>
+<p>LLM App的架构，究其本质，是生物性的发展过程和整体类比的结果，将LLM进行类脑比较，定位为整体中枢，进行分工合作。</p>
+<h2 id="第一部分planning">第一部分：Planning</h2>
+<p>一项复杂任务通常会包含很多步骤，Agent需要了解这些步骤是什么并提前规划。</p>
+<p><strong>任务拆解</strong>：
+Chain of thought (CoT; Wei et al. 2022) 已经成为一种标准的Prompting技术，用于提高模型在复杂任务中的性能。模型被要求“think step by step”利用更多的时间进行计算，将艰难的任务分解成更小，更简单的步骤。CoT将大型任务转化为多个可管理的任务，并对模型的思维过程进行了阐释。</p>
+<p>Tree of Thoughts  (Yao et al. 2023) 进一步扩展CoT，在每一步都探索多种推理的可能性。它首先将问题分解为多个思考步骤，并在每个步骤中生成多个思考，从而创造一个树形结构。搜索过程可以是BFS(广度优先搜索）或DFS（深度优先搜索），每个状态由分类器（通过一个prompt）或少数服从多数的投票原则来决定。</p>
+<p>任务分解可通过以下几种方式实现：</p>
+<ul>
+<li>a. 给LLM一个简单的提示词“Steps for XYZ.\n1.”，“What are the subgoals for achieving XYZ?”</li>
+<li>b. 使用针对具体任务的指令，例如对一个写小说的任务先给出“Write a story outline.”指令</li>
+<li>c. 使用者直接输入</li>
+</ul>
+<p>Graph of Thoughts（Besta et al. 2023）同时支持多链、树形以及任意图形结构的Prompt方案，支持各种基于图形的思考转换,如聚合、回溯、循环等,这在CoT和ToT中是不可表达的。将复杂问题建模为操作图（Graph of Operations，GoO),以LLM作为引擎自动执行，从而提供解决复杂问题的能力。某种程度上，GoT囊括了单线条的CoT和多分枝的ToT。</p>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/different_thoughts.png" alt="几种思维的对比">
+
+</p>
+<p>无论是CoT还是ToT，本质上是通过Prompt的精心设计，激发出模型原有的Metacognition
+只是如何通过某条神经元的线索能更加精准的调动出大脑中最擅长Planning的部分</p>
+<p>另一种截然不同的方式，LLM+P (Liu et al. 2023)，通过借助一个外部的经典Planner来进行一个更加长序列的整体规划。这种方法利用规划域定义语言（Planning Domain Definition Language, PDDL）作为中间接口来描述规划问题。整个使用过程，首先LLM将问题翻译成“问题PDDL”，接着请求经典Planner根据现有的“领域PDDL”生成一个PDDL Plan，最后将PDDL计划翻译回自然语言（LLM做的）。根本上讲，Planning Step是外包给外部工具的，当然也有一个前提：需要有特定领域的PDDL和合适的Planner。</p>
+<p><strong>模型自我反省</strong>:
+Self-reflection是非常重要的一环，它允许Agent通过完善过去的行动决策和纠正以前的错误来不断改进。现实世界中的任务中，试错仍然是无法避免的，自我反思在其中发挥着至关重要的作用。</p>
+<p><strong>ReAct</strong> (Yao et al. 2023)即Reson+Act通过将Action Space扩展为特定任务的离散动作和语言空间的组合，在LLM内部整合了推理（Reasoning）和行动（Action）。前者使LLM能够与环境交互（例如，使用Wikipedia Search的 API），后者通过提示词使得LLM用自然语言生成整体的推理过程。</p>
+<p>ReAct提示词模板包含了提供LLM思考的明确步骤，其大致格式为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Thought: ...
+</span></span><span style="display:flex;"><span>Action: ...
+</span></span><span style="display:flex;"><span>Observation: ...
+</span></span></code></pre></div><p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/react_framework.png" alt="react框架">
+
+</p>
+<p>知识密集型任务（如HotpotQA、FEVER）和决策型任务（如AlfWorld Env、WebShop）的推理轨迹示例</p>
+<p>在知识密集型任务和决策任务的两个实验中，ReAct的表现比去掉Thought&hellip;的单一Act&hellip;方式更加优异</p>
+<p><strong>Reflexion</strong> (Shinn &amp; Labash 2023)是一个让Agent具备动态记忆和自我反思能力以提高推理能力的框架。Reflexion采用标准的RL设置，其中奖励模型提供简单的二进制奖励，而Action Space则采用ReAct中的设置，即在特定任务的行动空间中加入语言，以实现复杂的推理步骤。在每一个Action at之后，Agent会计算一个启发式函数ht，并根据自我反思的结果决定是否重置环境以开始一个新的循环</p>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/reflexion.png" alt="reflection架构示意图">
+
+</p>
+<p>启发式函数判断何时整个循环轨迹是低效的或者何时因为包含了幻觉需要停止。低效规划指的是耗时过长却未成功的循环轨迹。幻觉是指在环境中遇到一连串相同的行动，而这些行动会导致相同的观察结果。</p>
+<p>自我反思过程通过给LLM一个two-shot例子创造，每个例子都是一对（失败的轨迹、在计划中指导进一步变化的理想反思）。接着，reflections将会被添加到Agent的工作记忆中作为查询LLM的上下文，最多三个。</p>
+<p><strong>Chain of Hindsight</strong> (CoH; Liu et al. 2023) 通过向模型明确展示一系列过去的输出结果，鼓励模型改进自己的输出结果。人类的反馈数据收集为，其中是提示词，每个是一个模型生成的文本，表示人类对的打分，是相应的人类对于过去输出结果的反馈。假设反馈源按照奖励值来进行排序，。这一过程本质上是监督微调，在这个过程中数据是一个序列，形式如下，其中。这个模型被微调以前序列内容为条件去预测，这样模型就能够根据反馈序列进行自我反思，以产生更好的输出。在测试的时候，模型可以选择接受人类注释者的多轮指导。</p>
+<p>为了避免过拟合，CoH增加了一个正则化项，来最大化预训练数据集的对数似然概率。我为了避免捷径化和复制（因为反馈序列中有许多常见单词），在训练过程中他们随机屏蔽了0%-5%的过去的token。</p>
+<p>他们在实验中的训练数据集是 WebGPT comparisons, summarization from human feedback和 human preference dataset。</p>
+<p>CoH的理念是结合实际情况，展示连续改进产出的历史结果，并训练模型能够顺应趋势，产生更好的输出结果。Algorithm Distillation (AD; Laskin et al. 2023）将同样的理念应用于强化学习任务中的跨周期轨迹，算法被封装在一个长历史条件策略中。考虑到Agent会与环境多次交互，并且每个周期内Agent都会变得更好，AD将这些学习历史连接起来并将其喂到模型里。因此，我们应该期待下一次预测的行动会比之前的试验取得更好的结果。目标是AD学习RL算法的过程，而不是训练特定任务的策略本身。</p>
+<h2 id="第二部分memory">第二部分：Memory</h2>
+<p>记忆类型：
+记忆可以定义为用于获取、存储、保留和随后检索信息的过程。人脑中有多种类型的记忆。</p>
+<ol>
+<li>
+<p>感官记忆：这是记忆的最早期阶段，在接受了原始刺激后保留的感官信息（视觉、听觉等）印象的能力。感官记忆通常只能持续几秒钟。其中包含图标记忆（视觉）、回声记忆（听觉）和触碰记忆（触觉）。</p>
+</li>
+<li>
+<p>短时记忆（STM)或工作记忆：它存储了我们当前意识到的信息，以及执行复杂认知任务（如学习和推理）所需的信息。短期记忆被认为有大约7个项目的容量，并能够持续20-30秒。</p>
+</li>
+<li>
+<p>长时记忆（LTM）：长时记忆可以将信息存储很长时间，从几天到几十年不等，存储容量基本上是无限的。长时记忆分为两种：</p>
+</li>
+</ol>
+<ul>
+<li>a. 显性/陈述性记忆：对事实和事件的记忆，指那些可以有意识地回忆起的记忆，包括外显记忆（事件和经历）和语义记忆（事实和概括）。</li>
+<li>b. 隐形/程序性记忆：这种记忆是无意识的，设计自动执行的技能和例行程序，如骑车、在键盘上打字。</li>
+</ul>
+<p>大致的将这些记忆内容映射到LLM中</p>
+<ul>
+<li>感官记忆作为对原始输入（包括文本、图像或其他模态）的学习嵌入表示</li>
+<li>短期记忆作为上下文学习。它是短暂且有限的，因为它受到了transformer结构的上下文窗口长度的限制</li>
+<li>长期记忆作为Agent在查询时可以关注的外部向量存储，可以通过快速检索来进行访问</li>
+</ul>
+<p><strong>最大内部产品搜索</strong>（Maximum Inner Product Search，MIPS）
+通过使用外部存储器可以缓解关注范围有限的限制。一种标准的做法是将信息的嵌入表示法保存到向量数据库中，该数据库能够支持快速的最大内积搜索（MIPS）。为了优化检索速度，常见的选择是近似相邻（Approximate Nearest Neighbors，ANN）算法，返回近似的top k个近邻，用损失少量的精度来换取速度的巨大提升。</p>
+<p>几种常见的ANN算法选择进行快速MIPS</p>
+<p>LSH (Locality-Sensitive Hashing，局部敏感的哈希算法)：它引入了一种哈希函数，这种哈希函数能够最大限度地将相似的输入项映射到同一个桶中，其中桶的数量要远小于输入内容的数量。</p>
+<p>ANNOY (Approximate Nearest Neighbors Oh Yeah)：核心数据结构是随机投影树,它是一个二叉树集合,每个非叶子节点表示将输入空间划分为两半的一个超平面,每个叶子节点存储一个数据点。这些树是独立随机构建的,在某种程度上,它模拟了一个哈希函数的作用。ANNOY 的搜索发生在所有树中,迭代地搜索最接近查询的那一半,然后聚合结果。其思想与 KD 树非常相关,但是可扩展性更强。</p>
+<p>HNSW (Hierarchical Navigable Small World)：HNSW的设计思想来源于小世界网络，在小世界网络中，每个节点只需要通过很少的步数就可以连接到任何其他节点。比如社交网络中的“六度分隔”理论。HNSW构建了多层的小世界网络结构,底层包含实际的数据点。中间层创建了一些“快捷键”来加速搜索过程。在进行搜索时，HNSW从顶层的一个随机节点开始，逐步导航向目标节点移动。如果在一层无法接近目标，它就会下降到下一层，直到到达底层。在上层每一步导航都能潜在地跨越数据空间中的大距离,而在下层每一步导航可以提高搜索的质量。</p>
+<p>FAISS (Facebook AI Similarity Search)：它基于这样一个假设,即在高维空间中,节点之间的距离遵循高斯分布,因此应该存在数据聚类。FAISS通过向量量化来实现,先将向量空间划分为若干集群,然后在每个集群内进行更精细的量化。在搜索时,首先使用粗粒度的量化查找可能的集群候选,然后在每个候选集群内使用更细致的量化进行进一步查找。</p>
+<p>ScaNN (Scalable Nearest Neighbors)：ScaNN算法的主要创新在于使用了各向异性向量量化。他对数据点到进行向量化，使得内积&lt;q,&gt;尽可能与∠q和的原始距离相似，而不是选择最接近的量化质心点。</p>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/MIPS_algorithm_comparison.png" alt="检索算法召回性能对比">
+
+</p>
+<p>在 ann-benchmarks.com 上查看更多 MIPS 算法和性能比较。</p>
+<p>记忆的获取在某种程度上会提高Planning整体质量，但同时也会拉长整体服务的时延，因此如何快速且精准的捕捉相关的记忆至关重要。Vector Search和Attention Mechanism之间的平衡也是速度与准确性之间的平衡
+当然都是因为没有无限的上下文学习</p>
+<h2 id="第三部分tool-use">第三部分：Tool Use</h2>
+<p>使用工具是人类的一个显著特点，我们创造、修改和利用外部物体来完成超越我们身体和认知极限的事情。为LLM配备外部工具可以大大扩展模型的功能。</p>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/tool_classification.png" alt="工具分类">
+
+</p>
+<p>确定性工具-API工具-专家模型-物理世界工具</p>
+<p>让语言模型只做语言模型该做的事儿，通过文字生成内容传递逻辑。</p>
+<p>借助各式各样的工具完成逻辑的执行</p>
+<p>使用工具的方法：
+<strong>MRKL</strong> (Karpas et al. 2022)，是 &ldquo;模块化推理、知识和语言 &ldquo;（Modular Reasoning,Knowledge and Language)的简称，是一种用于自主代理的神经符号架构。建议 MRKL 系统包含一系列 &ldquo;专家 &ldquo;模块，而通用 LLM 则充当路由器，将查询路由到最合适的专家模块。这些模块可以是神经模块（如深度学习模型），也可以是符号模块（如数学计算器、货币转换器、天气 API）。</p>
+<p>他们用算术作为测试案例，做了一个微调 LLM 以调用计算器的实验。他们的实验表明，由于 LLM（7B  Jurassic1-large 模型）无法可靠地提取基本算术的正确论据，因此解决口算数学问题比解决明确表述的数学问题更难。这些结果突出表明，当外部符号工具能够可靠地发挥作用时，了解何时以及如何使用这些工具至关重要，这取决于 LLM 的能力。</p>
+<p><strong>TALM</strong> (工具增强型语言模型Tool Augmented Language Models; Parisi et al. 2022)和Toolformer (Schick et al. 2023)都做了微调LM，学习使用外部工具。数据集的扩展与否取决于新添加的API调用注释能否提高模型输出的质量。更多详情，参阅Prompt Engineering的 “External APIs” section。</p>
+<p>ChatGPT Plugins 和 OpenAI API 函数调用就是增强了工具使用能力的 LLM 在实践中发挥作用的良好范例。工具应用程序接口集合可以由其他开发人员提供（如插件）或自行定义（如函数调用）。</p>
+<p><strong>HuggingGPT</strong> (Shen et al. 2023)是一个使用 ChatGPT 作为任务规划器的框架，用于根据模型描述选择 HuggingFace 平台中可用的模型，并根据执行结果总结响应。</p>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/huggingGPT.png" alt="huggingGPT介绍">
+
+</p>
+<p>该系统包括4个阶段</p>
+<p>（1）任务规划(Task planning)：LLM 充当大脑，将用户请求解析为多个任务。每个任务都有四个相关属性：任务类型、ID、依赖关系和参数。他们使用少量的示例来指导 LLM 进行任务解析和规划。</p>
+<p>（2）模型选择(Model selection):LLM 将任务分配给专家模型，其中的要求是一个多选题。LLM 会收到一份可供选择的模型列表。由于上下文长度有限，因此需要进行基于任务类型的过滤。</p>
+<p>（3）任务执行(Task execution):专家模型执行特定任务并记录结果。</p>
+<p>（4）返回结果(Response generation)：LLM 接收执行结果，并向用户提供汇总结果。</p>
+<p>如果要将 HuggingGPT 投入实际应用，需要解决几个难题：</p>
+<ul>
+<li>a.需要提高效率，因为 LLM 推理轮和与其他模型的交互都会减慢进程；</li>
+<li>b.它依赖于较长的上下文窗口来交流复杂的任务内容；</li>
+<li>c.提高 LLM 输出和外部模型服务的稳定性。</li>
+</ul>
+<p><strong>模型评估</strong>：
+<strong>API-Bank</strong> (Li et al. 2023) 是评估工具增强型LLMs性能的基准。它包含了53个常用的API工具，一个完整的工具增强型LLM的工作流，以及264个注释对话其中涉及了568个API的调用。可供选择的 API 种类繁多，包括搜索引擎、计算器、日历查询、智能家居控制、日程管理、健康数据管理、账户认证工作流程等。由于有大量的 API，LLM 首先可以访问 API 搜索引擎，找到要调用的正确 API，然后使用相应的文档进行调用。</p>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/evaluation_algorithm.png" alt="LLM 如何在 API-Bank 中调用 API 的伪代码">
+
+</p>
+<p>在 API-Bank 工作流程中，LLM 需要做出几个决定，我们可以在每个步骤中评估该决定的准确性。</p>
+<p>决策包括：</p>
+<ul>
+<li>a. 是否需要调用 API。</li>
+<li>b. 确定要调用的正确 API：如果不够好，LLM 需要反复修改 API 输入（例如，决定搜索引擎 API 的搜索关键词）。</li>
+<li>c. 根据 API 结果做出响应：如果结果不满意，模型可以选择改进并再次调用。</li>
+</ul>
+<p>该基准从三个层面对代理的工具使用能力进行评估：</p>
+<ul>
+<li>Level1-评估调用 API 的能力。根据 API 的描述，模型需要确定是否调用给定的 API、正确调用 API 以及正确响应 API 的返回。</li>
+<li>Level2-检查检索 API 的能力。模型需要搜索可能解决用户需求的 API，并通过阅读文档学习如何使用这些 API。</li>
+<li>Level3-评估除检索和调用外规划 API 的能力。对于不明确的用户请求（如安排小组会议、预订旅行机票/酒店/餐厅），模型可能需要调用多个 API 才能解决。</li>
+</ul>
+<p><strong>AgentBench</strong>（Liu et al. 2023）是一个多维度且不断发展的Agent Benchmark，目前选择8个不同的场景（操作系统、数据库、知识图谱、数字卡牌游戏、侧向思维谜题、家务管理、网络购物和网页浏览），用于评估LLM作为Agent在多轮开放式生成环境中的推理和决策能力。系统性测试了25个LLM在八个环境中的表现，从整体得分来看GPT4遥遥领先。在数据库，卡牌游戏，知识图谱等复杂任务处理场景中也展现出潜力。</p>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/agentbenchmark.png" alt="agentbenchmark">
+
+</p>
+<p>不同LLM在AgentBench中的概览，虽然LLMs表现出了在LLM-as-Agent方向的能力，但是开源模型和闭源商业模型的差距还是巨大</p>
+<h2 id="第四部分前沿论文">第四部分：前沿论文</h2>
+<p>
+  <img src="/img/2024-08-04-LLMs_agents_tech_details/agent_develop_trends.png" alt="智能体自动化技术发展趋势">
+
+
+基于LLM的Automous Agent 发展趋势</p>
+<p>自ChatGPT爆火以来Agent相关领域的研究蓬勃发展，目前Agent方向的相关论文已累计高达160篇。其中的Agent根据其各自的能力共分为四类：</p>
+<p>Tool Agent（工具Agent）：利用各种外部工具（如搜索引擎，知识库等）来辅助完成任务，代表论文有WebGPT、Toolformer等</p>
+<p>Simulation Agent（仿真Agent）：用于构建仿真环境，通常包含多个代理用于多角色互动、对话等。代表论文有Social Simulacra、Generative Agents等</p>
+<p>General Agent（通用代理）：追求通用性，可应用于多领域任务。代表论文有AutoGPT、LangChain等</p>
+<p>Domain Agent（领域Agent）：针对特定领域或任务进行优化设计。代表论文有ChemCrow（化学），ChatDev（软件开发）等</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://loveAtCorner.github.io/"><img src="/img/favicon.png" />YuTian Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2024/08/03/LLMs_agents/" data-toggle="tooltip" data-placement="top" title="Agent 通用创作思路">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/llms-agent" title="llms, agent">
+                            llms, agent
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/llmsapi" title="llms,api">
+                            llms,api
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://caixiongjiang.github.io">caixiongjiang的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:leoyutian@yeah.net">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/loveAtCorner">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/tianyu271828">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="YuTian Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; YuTian Blog 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
