@@ -10,16 +10,16 @@
     <atom:link href="https://loveAtCorner.github.io/tags/llms-agent/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Agent技术细节</title>
-      <link>https://loveAtCorner.github.io/2024/08/04/LLMs_agents_tech_details/</link>
+      <link>https://loveAtCorner.github.io/2024/08/04/LLMs_agents_tech_detail/</link>
       <pubDate>Sun, 04 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/08/04/LLMs_agents_tech_details/</guid>
+      <guid>https://loveAtCorner.github.io/2024/08/04/LLMs_agents_tech_detail/</guid>
       <description>agent的底层实现原理 LLM App的架构，究其本质，是生物性的发展过程和整体类比的结果，将LLM进行类脑比较，定位为整体中枢，进行分工合作。 第</description>
     </item>
     <item>
       <title>Agent 通用创作思路</title>
-      <link>https://loveAtCorner.github.io/2024/08/03/LLMs_agents/</link>
+      <link>https://loveAtCorner.github.io/2024/08/03/LLMs_agent_application/</link>
       <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/08/03/LLMs_agents/</guid>
+      <guid>https://loveAtCorner.github.io/2024/08/03/LLMs_agent_application/</guid>
       <description>Agent的架构 Agent 可大致被定义为如下图所示的系统：Agents = LLM + memory + planning skills + tool use Planning 拆解子目标和任务分解：Agent能够将大型任务分解为较小</description>
     </item>
   </channel>

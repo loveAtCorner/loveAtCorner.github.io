@@ -10,8 +10,8 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="/img/2024-08-03-LLMs_agents/agent.png">
-    <meta property="twitter:image" content="/img/2024-08-03-LLMs_agents/agent.png" />
+    <meta property="og:image" content="/img/2024-08-03-LLMs_agent_application/agent.png">
+    <meta property="twitter:image" content="/img/2024-08-03-LLMs_agent_application/agent.png" />
     
 
     
@@ -36,7 +36,7 @@
 
     <title>Agent 通用创作思路 | 虞天的博客 | YuTian Blog</title>
 
-    <link rel="canonical" href="/2024/08/03/LLMs_agents/">
+    <link rel="canonical" href="/2024/08/03/LLMs_agent_application/">
 
     
     
@@ -162,7 +162,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('/img/2024-08-03-LLMs_agents/agent.png')
+        background-image: url('/img/2024-08-03-LLMs_agent_application/agent.png')
     }
 </style>
 
@@ -217,7 +217,7 @@
                 <h2 id="agent的架构">Agent的架构</h2>
 <p>Agent 可大致被定义为如下图所示的系统：Agents = LLM + memory + planning skills + tool use</p>
 <p>
-  <img src="/img/2024-08-03-LLMs_agents/agent_bone.png" alt="agent结构">
+  <img src="/img/2024-08-03-LLMs_agent_application/agent_bone.png" alt="agent结构">
 
 </p>
 <p>Planning</p>
@@ -236,7 +236,7 @@
 </ul>
 <h2 id="生成式ai产品分级">生成式AI产品分级</h2>
 <p>
-  <img src="/img/2024-08-03-LLMs_agents/generative_AI_application_level.png" alt="生成式AI的应用层次">
+  <img src="/img/2024-08-03-LLMs_agent_application/generative_AI_application_level.png" alt="生成式AI的应用层次">
 
 </p>
 <p>根据AI App的智能化能力和解决问题的能力进行等级划分及整体描述，我们可以近似得到以上的能力划分表。随着智能化的程度递增，App能解决的问题范围也逐渐在扩大。</p>
@@ -249,26 +249,26 @@
 <p>ModelScope-Agent是由阿里云AI模型社区魔搭（ModelScope）2023.8.7发布的开源框架，代码清晰简洁。</p>
 <p>提供了一个通用的、可定制的Agent框架。它提供了一个用户友好的系统库， 具有可定制且功能全面的框架、使用开源LLMs作为核心组件、支持多样化且全面的API。</p>
 <p>
-  <img src="/img/2024-08-03-LLMs_agents/modelscope_agent.png" alt="modelscope_agent">
+  <img src="/img/2024-08-03-LLMs_agent_application/modelscope_agent.png" alt="modelscope_agent">
 
 </p>
 <p>并提供了<a href="https://github.com/modelscope/modelscope-agent/tree/master/apps/agentfabric">AgentFabric</a>应用，可快速创建一个基本的Agent，并已部署上线在<a href="https://modelscope.cn/studios/modelscope/AgentFabric/summary">创空间</a>。</p>
 <p>
-  <img src="/img/2024-08-03-LLMs_agents/agentfabric_usage.png" alt="agentfabric_usage">
+  <img src="/img/2024-08-03-LLMs_agent_application/agentfabric_usage.png" alt="agentfabric_usage">
 
 </p>
 <p>相关论文详见：ModelScope-Agent: <a href="https://arxiv.org/abs/2309.00986">Building Your Customizable Agent System with Open-source Large Language Models</a></p>
 <h4 id="langchain">Langchain</h4>
 <p><a href="https://github.com/langchain-ai/langchain">Langchain</a> 由 Harrison Chase 2022 年 10 月开源，并迅速转变为一家初创公司，是一个轻量级框架，专门用于构建基于LLM的应用，不仅限于 Agent 应用，其中关于Agent的开发方法可查看其文档中的<a href="https://python.langchain.com/v0.1/docs/modules/agents/">Agents | 🦜️🔗 Langchain</a>。</p>
 <p>
-  <img src="/img/2024-08-03-LLMs_agents/langchain_framework.png" alt="langchain_framework">
+  <img src="/img/2024-08-03-LLMs_agent_application/langchain_framework.png" alt="langchain_framework">
 
 </p>
 <p>但Agent不是其主要框架，而是其中一个功能，其常见的应用方案是外接知识库，通过向量化的方式给LLM外接一个大脑。​</p>
 <h4 id="metagpt">MetaGPT</h4>
 <p>MetaGPT由DeepWisdom于2023年8月1号发布，是一个多智能体协作的框架，旨在解决基于大型语言模型（LLMs）的多智能体协作中的复杂问题，核心理念是使 GPTs 组成团队，将协作的SOP具象化，通过SOP(Team)协作处理更复杂的任务。</p>
 <p>
-  <img src="/img/2024-08-03-LLMs_agents/metaGPT.png" alt="metaGPT">
+  <img src="/img/2024-08-03-LLMs_agent_application/metaGPT.png" alt="metaGPT">
 
 </p>
 <h4 id="agently">Agently</h4>
@@ -280,7 +280,7 @@
 <h2 id="通用创作思路参考">通用创作思路参考</h2>
 <p>笔者根据自己的经验，参考软件设计流程大致整理了以下通用的 Agent 应用设计SOP：</p>
 <p>
-  <img src="/img/2024-08-03-LLMs_agents/agent_design_SOP.png" alt="agent_design_SOP">
+  <img src="/img/2024-08-03-LLMs_agent_application/agent_design_SOP.png" alt="agent_design_SOP">
 
 </p>
 <ol>
@@ -376,7 +376,7 @@
                     
                     
                     <li class="next">
-                        <a href="/2024/08/04/LLMs_agents_tech_details/" data-toggle="tooltip" data-placement="top" title="Agent技术细节">Next
+                        <a href="/2024/08/04/LLMs_agents_tech_detail/" data-toggle="tooltip" data-placement="top" title="Agent技术细节">Next
                             Post &rarr;</a>
                     </li>
                     
@@ -433,6 +433,10 @@
                         </a>
                         
                         
+                        
+                        <a href="/tags/llms-dev_framework" title="llms, dev_framework">
+                            llms, dev_framework
+                        </a>
                         
                         
                         

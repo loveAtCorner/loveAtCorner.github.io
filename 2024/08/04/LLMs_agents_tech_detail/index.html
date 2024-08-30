@@ -10,8 +10,8 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="/img/2024-08-04-LLMs_agents_tech_details/otter.png">
-    <meta property="twitter:image" content="/img/2024-08-04-LLMs_agents_tech_details/otter.png" />
+    <meta property="og:image" content="/img/2024-08-04-LLMs_agents_tech_detail/otter.png">
+    <meta property="twitter:image" content="/img/2024-08-04-LLMs_agents_tech_detail/otter.png" />
     
 
     
@@ -36,7 +36,7 @@
 
     <title>Agent技术细节 | 虞天的博客 | YuTian Blog</title>
 
-    <link rel="canonical" href="/2024/08/04/LLMs_agents_tech_details/">
+    <link rel="canonical" href="/2024/08/04/LLMs_agents_tech_detail/">
 
     
     
@@ -162,7 +162,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('/img/2024-08-04-LLMs_agents_tech_details/otter.png')
+        background-image: url('/img/2024-08-04-LLMs_agents_tech_detail/otter.png')
     }
 </style>
 
@@ -216,7 +216,7 @@
                 
                 <h1 id="agent的底层实现原理">agent的底层实现原理</h1>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/the_anatomy_of_autonomy.png" alt="自动化解剖图">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/the_anatomy_of_autonomy.png" alt="自动化解剖图">
 
 </p>
 <p>LLM App的架构，究其本质，是生物性的发展过程和整体类比的结果，将LLM进行类脑比较，定位为整体中枢，进行分工合作。</p>
@@ -233,7 +233,7 @@ Chain of thought (CoT; Wei et al. 2022) 已经成为一种标准的Prompting技�
 </ul>
 <p>Graph of Thoughts（Besta et al. 2023）同时支持多链、树形以及任意图形结构的Prompt方案，支持各种基于图形的思考转换,如聚合、回溯、循环等,这在CoT和ToT中是不可表达的。将复杂问题建模为操作图（Graph of Operations，GoO),以LLM作为引擎自动执行，从而提供解决复杂问题的能力。某种程度上，GoT囊括了单线条的CoT和多分枝的ToT。</p>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/different_thoughts.png" alt="几种思维的对比">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/different_thoughts.png" alt="几种思维的对比">
 
 </p>
 <p>无论是CoT还是ToT，本质上是通过Prompt的精心设计，激发出模型原有的Metacognition
@@ -247,14 +247,14 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 </span></span><span style="display:flex;"><span>Action: ...
 </span></span><span style="display:flex;"><span>Observation: ...
 </span></span></code></pre></div><p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/react_framework.png" alt="react框架">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/react_framework.png" alt="react框架">
 
 </p>
 <p>知识密集型任务（如HotpotQA、FEVER）和决策型任务（如AlfWorld Env、WebShop）的推理轨迹示例</p>
 <p>在知识密集型任务和决策任务的两个实验中，ReAct的表现比去掉Thought&hellip;的单一Act&hellip;方式更加优异</p>
 <p><strong>Reflexion</strong> (Shinn &amp; Labash 2023)是一个让Agent具备动态记忆和自我反思能力以提高推理能力的框架。Reflexion采用标准的RL设置，其中奖励模型提供简单的二进制奖励，而Action Space则采用ReAct中的设置，即在特定任务的行动空间中加入语言，以实现复杂的推理步骤。在每一个Action at之后，Agent会计算一个启发式函数ht，并根据自我反思的结果决定是否重置环境以开始一个新的循环</p>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/reflexion.png" alt="reflection架构示意图">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/reflexion.png" alt="reflection架构示意图">
 
 </p>
 <p>启发式函数判断何时整个循环轨迹是低效的或者何时因为包含了幻觉需要停止。低效规划指的是耗时过长却未成功的循环轨迹。幻觉是指在环境中遇到一连串相同的行动，而这些行动会导致相同的观察结果。</p>
@@ -296,7 +296,7 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 <p>FAISS (Facebook AI Similarity Search)：它基于这样一个假设,即在高维空间中,节点之间的距离遵循高斯分布,因此应该存在数据聚类。FAISS通过向量量化来实现,先将向量空间划分为若干集群,然后在每个集群内进行更精细的量化。在搜索时,首先使用粗粒度的量化查找可能的集群候选,然后在每个候选集群内使用更细致的量化进行进一步查找。</p>
 <p>ScaNN (Scalable Nearest Neighbors)：ScaNN算法的主要创新在于使用了各向异性向量量化。他对数据点到进行向量化，使得内积&lt;q,&gt;尽可能与∠q和的原始距离相似，而不是选择最接近的量化质心点。</p>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/MIPS_algorithm_comparison.png" alt="检索算法召回性能对比">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/MIPS_algorithm_comparison.png" alt="检索算法召回性能对比">
 
 </p>
 <p>在 ann-benchmarks.com 上查看更多 MIPS 算法和性能比较。</p>
@@ -305,7 +305,7 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 <h2 id="第三部分tool-use">第三部分：Tool Use</h2>
 <p>使用工具是人类的一个显著特点，我们创造、修改和利用外部物体来完成超越我们身体和认知极限的事情。为LLM配备外部工具可以大大扩展模型的功能。</p>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/tool_classification.png" alt="工具分类">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/tool_classification.png" alt="工具分类">
 
 </p>
 <p>确定性工具-API工具-专家模型-物理世界工具</p>
@@ -318,7 +318,7 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 <p>ChatGPT Plugins 和 OpenAI API 函数调用就是增强了工具使用能力的 LLM 在实践中发挥作用的良好范例。工具应用程序接口集合可以由其他开发人员提供（如插件）或自行定义（如函数调用）。</p>
 <p><strong>HuggingGPT</strong> (Shen et al. 2023)是一个使用 ChatGPT 作为任务规划器的框架，用于根据模型描述选择 HuggingFace 平台中可用的模型，并根据执行结果总结响应。</p>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/huggingGPT.png" alt="huggingGPT介绍">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/huggingGPT.png" alt="huggingGPT介绍">
 
 </p>
 <p>该系统包括4个阶段</p>
@@ -335,7 +335,7 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 <p><strong>模型评估</strong>：
 <strong>API-Bank</strong> (Li et al. 2023) 是评估工具增强型LLMs性能的基准。它包含了53个常用的API工具，一个完整的工具增强型LLM的工作流，以及264个注释对话其中涉及了568个API的调用。可供选择的 API 种类繁多，包括搜索引擎、计算器、日历查询、智能家居控制、日程管理、健康数据管理、账户认证工作流程等。由于有大量的 API，LLM 首先可以访问 API 搜索引擎，找到要调用的正确 API，然后使用相应的文档进行调用。</p>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/evaluation_algorithm.png" alt="LLM 如何在 API-Bank 中调用 API 的伪代码">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/evaluation_algorithm.png" alt="LLM 如何在 API-Bank 中调用 API 的伪代码">
 
 </p>
 <p>在 API-Bank 工作流程中，LLM 需要做出几个决定，我们可以在每个步骤中评估该决定的准确性。</p>
@@ -353,13 +353,13 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 </ul>
 <p><strong>AgentBench</strong>（Liu et al. 2023）是一个多维度且不断发展的Agent Benchmark，目前选择8个不同的场景（操作系统、数据库、知识图谱、数字卡牌游戏、侧向思维谜题、家务管理、网络购物和网页浏览），用于评估LLM作为Agent在多轮开放式生成环境中的推理和决策能力。系统性测试了25个LLM在八个环境中的表现，从整体得分来看GPT4遥遥领先。在数据库，卡牌游戏，知识图谱等复杂任务处理场景中也展现出潜力。</p>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/agentbenchmark.png" alt="agentbenchmark">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/agentbenchmark.png" alt="agentbenchmark">
 
 </p>
 <p>不同LLM在AgentBench中的概览，虽然LLMs表现出了在LLM-as-Agent方向的能力，但是开源模型和闭源商业模型的差距还是巨大</p>
 <h2 id="第四部分前沿论文">第四部分：前沿论文</h2>
 <p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_details/agent_develop_trends.png" alt="智能体自动化技术发展趋势">
+  <img src="/img/2024-08-04-LLMs_agents_tech_detail/agent_develop_trends.png" alt="智能体自动化技术发展趋势">
 
 
 基于LLM的Automous Agent 发展趋势</p>
@@ -417,13 +417,13 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2024/08/03/LLMs_agents/" data-toggle="tooltip" data-placement="top" title="Agent 通用创作思路">&larr;
+                        <a href="/2024/08/03/LLMs_agent_application/" data-toggle="tooltip" data-placement="top" title="Agent 通用创作思路">&larr;
                             Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2024/08/06/LLMs_langchain_practice/" data-toggle="tooltip" data-placement="top" title="langchain开发框架实践">Next
+                        <a href="/2024/08/06/LLMs_langchain_practice_chain/" data-toggle="tooltip" data-placement="top" title="langchain开发框架实践（一）">Next
                             Post &rarr;</a>
                     </li>
                     
@@ -480,6 +480,10 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
                         </a>
                         
                         
+                        
+                        <a href="/tags/llms-dev_framework" title="llms, dev_framework">
+                            llms, dev_framework
+                        </a>
                         
                         
                         

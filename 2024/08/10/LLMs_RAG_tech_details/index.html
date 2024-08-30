@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="YuTian Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="/img/2024-08-10-LLMs_RAG_tech_details/rag.png">
+    <meta property="twitter:image" content="/img/2024-08-10-LLMs_RAG_tech_details/rag.png" />
+    
+
+    
+    <meta name="title" content="RAG技术细节" />
+    <meta property="og:title" content="RAG技术细节" />
+    <meta property="twitter:title" content="RAG技术细节" />
+    
+
+    
+    <meta name="description" content="介绍了RAG的通用技术">
+    <meta property="og:description" content="介绍了RAG的通用技术" />
+    <meta property="twitter:description" content="介绍了RAG的通用技术" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="虞天, 虞天的博客, YuTian Blog, 博客, llms, 大模型, Kubernetes, 微服务, ">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>RAG技术细节 | 虞天的博客 | YuTian Blog</title>
+
+    <link rel="canonical" href="/2024/08/10/LLMs_RAG_tech_details/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">YuTian Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/life/">life</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes//">NOTES</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/2024-08-10-LLMs_RAG_tech_details/rag.png')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/llms-dev_framework" title="LLMs, dev_framework">
+                            LLMs, dev_framework
+                        </a>
+                        
+                    </div>
+                    <h1>RAG技术细节</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    &#34;虞天&#34;
+                             
+                            on 
+                            Saturday, August 10, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>本文概述和解释可用的 RAG 算法和技术，并未深入研究代码中的实现细节</p>
+<h1 id="简介">简介</h1>
+<p>检索增强生成（RAG）是一种结合了信息检索与大语言模型（LLM）的技术，通过从特定数据源检索到的信息来作为生成答案的基础。基本上，RAG将搜索与LLM提示结合在一起：当您向模型提出查询时，它不仅依赖自身的训练数据，还通过检索算法找到相关的上下文信息，并将其作为提示的一部分注入给LLM，以生成更准确的答案。</p>
+<p>在2024年，RAG成为了基于LLM的系统中最受欢迎的架构之一。许多产品几乎完全基于RAG构建，从结合网络搜索引擎与LLM的问答服务，到与数百个数据应用程序的聊天功能，RAG的应用已经非常广泛。</p>
+<p>矢量搜索领域也受到了近年来兴起的热潮影响，尽管基于嵌入的搜索引擎早在2019年就已经通过<a href="https://faiss.ai/">faiss</a>开发出来了。像<a href="https://github.com/chroma-core/chroma">chroma</a>、<a href="https://weaviate.io/">weaviate.io</a>和<a href="https://www.pinecone.io/">pinecone</a>这样的矢量数据库初创公司，已经在现有的开源搜索索引（主要是faiss和<a href="https://github.com/nmslib/nmslib">nmslib</a>）的基础上构建，并为输入文本增加了额外的存储空间，最近还添加了一些其他工具。</p>
+<p>在基于LLM的管道和应用程序领域，<a href="https://python.langchain.com/v0.2/docs/introduction/">LangChain</a>和<a href="https://docs.llamaindex.ai/en/stable/">LlamaIndex</a>这两个最著名的开源库，分别于2022年10月和11月成立。这些库的创建受到ChatGPT发布的启发，并得到了广泛的采用。</p>
+<h1 id="简单-rag">简单 RAG</h1>
+<p>在本文中，我们将从一个文本文档语料库开始构建RAG管道。虽然我们省略了将数据从YouTube、Notion等各种源加载的部分，但可以借助强大的开源数据加载器来实现这一功能。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/naive_rag.png" alt="naive_rag">
+
+</p>
+<p>简单来说，Vanilla RAG案例的流程如下：首先，将文本分割成块，然后使用Transformer编码器模型将这些块嵌入到向量中。接着，将所有这些向量存入索引中。最后，为LLM创建一个提示，告诉模型根据我们在搜索步骤中找到的上下文回答用户的查询。</p>
+<p>在运行时，我们使用相同的编码器模型对用户的查询进行矢量化，然后在索引中搜索与此查询向量最匹配的前k个结果，从数据库中检索相应的文本块，并将其作为上下文输入LLM提示。</p>
+<p>示例提示词如下所示：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">question_answering</span>(context, query):
+</span></span><span style="display:flex;"><span>    prompt <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">f</span><span style="color:#f1fa8c">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    Give the answer to the user query delimited by triple backticks ```</span><span style="color:#f1fa8c">{</span>query<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">```</span><span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span><span style="color:#f1fa8c">    using the information given in context delimited by triple backticks ```</span><span style="color:#f1fa8c">{</span>context<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">```.</span><span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span><span style="color:#f1fa8c">    If there is no relevant information in the provided context, try to answer yourself,
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    but tell user that you did not have any relevant context to base your answer on.
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    Be concise and output the answer of size less than 80 tokens.
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    response <span style="color:#ff79c6">=</span> get_completion(instruction, prompt, model<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;gpt-3.5-turbo&#34;</span>)
+</span></span><span style="display:flex;"><span>    answer <span style="color:#ff79c6">=</span> response<span style="color:#ff79c6">.</span>choices[<span style="color:#bd93f9">0</span>]<span style="color:#ff79c6">.</span>message[<span style="color:#f1fa8c">&#34;content&#34;</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> answer
+</span></span></code></pre></div><p>提示词工程是改进RAG管道最简单且成本最低的方法之一。建议参考OpenAI提供的详细提示工程指南，以优化您的提示词。</p>
+<p>尽管OpenAI在LLM市场中处于领先地位，但也有许多替代选项，例如Anthropic的Claude，最近流行的Mistral的Mixtral，以及微软的Phi-2。此外，还有许多开源模型可供选择，如Llama2、OpenLLaMA和Falcon，因此您可以根据需求选择适合RAG管道的大脑。</p>
+<h1 id="高级-rag">高级 RAG</h1>
+<p>现在，我们将深入探讨高级RAG技术的概述，着重介绍其中涉及的核心步骤和算法。为了保持方案的清晰性和可读性，我们将省略一些逻辑循环和复杂的多步代理行为。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/advanced_rag.png" alt="naive_rag">
+
+</p>
+<p>在此方案中，绿色元素代表我们将进一步讨论的核心RAG技术，蓝色元素则表示文本部分。尽管一些先进的RAG概念（如各种上下文扩展方法）无法轻松在一个方案中直观展示，但我们将在讨论中逐步深入这些内容。</p>
+<h2 id="1-分块和矢量化">1. 分块和矢量化</h2>
+<p>首先，我们需要创建一个向量索引来表示我们的文档内容，并在运行时搜索这些向量与查询向量之间的最小余弦距离。</p>
+<h3 id="11-分块">1.1 分块</h3>
+<p>Transformer模型有固定的输入序列长度，即使其上下文窗口很大，一个或几个句子的向量通常比整页文本的平均向量更能代表语义意义。因此，我们需要将文档分割成较小的块，以保留其语义（例如将文本按句子或段落分割，而不是打断单个句子）。有许多文本分块器可以完成这一任务。</p>
+<p>块的大小是一个关键参数，取决于所使用的嵌入模型及其令牌容量。标准的Transformer编码器模型，如基于BERT的句子转换器，最多支持512个令牌，而OpenAI的ada-002模型可以处理更长的序列，如8191个令牌。在选择块大小时，我们需要在为LLM提供足够上下文以进行推理和确保嵌入足以进行有效搜索之间取得平衡。您可以参考相关研究来帮助确定合适的块大小。在LlamaIndex中，NodeParser类提供了定义文本分割器、元数据、节点/块关系等高级选项。</p>
+<h3 id="12-矢量化">1.2 矢量化</h3>
+<p>接下来，选择一个模型将这些块嵌入到向量中。有许多可供选择的模型，我建议选择专门优化用于搜索的模型，如bge large或E5 embeddings系列。最新更新可以参考<a href="https://huggingface.co/spaces/mteb/leaderboard">MTEB 排行榜</a>。</p>
+<p>对于分块和矢量化步骤的完整实现，请参考LlamaIndex中完整数据提取管道的<a href="https://docs.llamaindex.ai/en/latest/module_guides/loading/ingestion_pipeline/">示例</a>。</p>
+<h2 id="2-搜索索引">2. 搜索索引</h2>
+<h3 id="21-向量存储索引">2.1 向量存储索引</h3>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/vector_store.png" alt="vector_store">
+
+</p>
+<p>RAG管道的关键部分是搜索索引，用于存储我们在上一步中生成的矢量化内容。最简单的实现是平面索引，通过暴力计算查询向量与所有块向量之间的距离来找到匹配。</p>
+<p>为了在更大规模的数据集上实现高效检索，可以使用优化过的向量索引，如<a href="https://faiss.ai/">faiss</a>、<a href="https://github.com/nmslib/nmslib">nmslib</a>或<a href="https://github.com/spotify/annoy">annoy</a>，它们通常使用近似最近邻算法，如聚类、树结构或<a href="https://www.pinecone.io/learn/series/faiss/hnsw/">HNSW</a>。</p>
+<p>此外，还有一些托管解决方案和向量数据库，如<a href="https://www.pinecone.io/">Pinecone</a>、<a href="https://weaviate.io/">Weaviate</a>或<a href="https://www.trychroma.com/">Chroma</a>，它们还支持数据摄取管道，能够处理步骤1中描述的操作。</p>
+<p>根据您的索引选择、数据特点和搜索需求，您还可以将元数据与向量一起存储，并使用元数据过滤器进行特定时间或来源的信息搜索。</p>
+<p>LlamaIndex支持许多<a href="https://docs.llamaindex.ai/en/stable/community/integrations/vector_stores/">向量存储索引</a>，同时也支持其他更简单的索引实现，如列表索引、树索引和关键字表索引——这些将在Fusion检索部分讨论。</p>
+<h3 id="22-层次指标">2.2 层次指标</h3>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/hierarchical_index_retrieval.png" alt="hierarchical_index_retrieval">
+
+</p>
+<p>如果您需要在大量文档中进行高效检索，可以使用层次结构来优化搜索流程。在大型数据库的情况下，一个有效的方法是创建两个索引：一个由摘要组成，另一个由文档块组成。首先按摘要过滤出相关文档，然后在该相关组内搜索具体内容。</p>
+<h3 id="23-假设性问题和hyde">2.3 假设性问题和HyDE</h3>
+<p>另一种提高搜索质量的方法是让LLM为每个块生成一个假设问题，并将这些问题嵌入向量中，在运行时对这些问题向量执行查询搜索。这种方法的好处在于，查询与假设问题之间的语义相似性通常比与实际文本块更高。</p>
+<p>一种反向逻辑的方法称为HyDE，您可以要求LLM在给定查询的情况下生成一个假设的响应，然后使用该响应的向量和查询向量来提高搜索质量。</p>
+<h3 id="24-上下文丰富">2.4 上下文丰富</h3>
+<p>为了提高推理质量，我们可以检索较小的块以获得更好的搜索结果，但需要通过扩展周围的上下文来帮助LLM更好地理解和推理。</p>
+<p>有两种方法可以实现这一点：一种是通过扩展检索到的较小块周围的句子来增加上下文，另一种是递归地将文档拆分为较大的父块，其中包含较小的子块。</p>
+<h3 id="241-句子窗口检索">2.4.1 句子窗口检索</h3>
+<p>在此方案中，每个句子都被单独嵌入，提供了高精度的查询结果。然后，我们将检索到的句子前后扩展k个句子的上下文，将扩展后的段落作为上下文输入LLM。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/sentence_window_retrieval.png" alt="hierarchical_index_retrieval">
+
+</p>
+<p>绿色部分表示索引中检索到的句子嵌入，黑色+绿色部分则是馈送到LLM进行推理时提供的上下文。</p>
+<h3 id="242-自动合并检索器父文档检索器">2.4.2 自动合并检索器（父文档检索器）</h3>
+<p>自动合并检索器与句子窗口检索器的概念类似：通过搜索更细粒度的信息，然后在提供上下文给LLM进行推理之前，扩展上下文窗口。文档首先被拆分为较小的子块，并且每个子块都引用一个较大的父块。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/parent_child_chunks_retrieval.png" alt="parent_child_chunks_retrieval">
+
+</p>
+<p>在检索过程中，如果检索到的前k个子块中有n个以上链接到同一个父节点，我们将替换父节点并提供其作为上下文给LLM。这种方法类似于将多个检索到的子块自动合并成一个较大的父块。需要注意的是，搜索仅在子块索引内执行。有关更多细节，请参考LlamaIndex教程中的<a href="https://docs.llamaindex.ai/en/stable/examples/retrievers/recursive_retriever_nodes/">递归检索器+节点引用</a>。</p>
+<h3 id="25-融合检索或混合搜索">2.5 融合检索或混合搜索</h3>
+<p>融合检索结合了两种互补的搜索算法：基于关键字的老派搜索和现代语义或向量搜索。通过将这两种方法的结果组合在一起，我们通常可以获得更好的检索效果。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/fusion_retrieval_search.png" alt="fusion_retrieval_search">
+
+</p>
+<p>在LangChain中，这是通过Ensemble Retriever类实现的，结合您定义的检索器列表（例如faiss向量索引和基于BM25的检索器），并使用RRF（复式排名融合算法）进行重新排序。在LlamaIndex中，类似的功能也得到了支持。</p>
+<h2 id="3-重新排名和过滤">3. 重新排名和过滤</h2>
+<p>当我们得到检索结果后，接下来的任务是通过过滤、重新排名或其他转换步骤来优化结果。在LlamaIndex中，有多种后处理器可以根据相似性得分、关键字或元数据来过滤和重新排序结果，还可以使用其他模型（如LLM、句子变换器或Cohere-ranking端点）来进一步优化结果。</p>
+<p>这是在将检索到的上下文提供给LLM以生成最终答案之前的最后一步。</p>
+<h2 id="4-查询转换">4. 查询转换</h2>
+<p>查询转换是一种利用LLM作为推理引擎来修改用户输入，以提高检索质量的技术。有几种不同的实现方式。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/query_transformation.png" alt="query_transformation">
+
+</p>
+<p>如果查询过于复杂，LLM可以将其分解为多个子查询。例如，假设您询问：“LangChain或LlamaIndex，哪个框架在GitHub上有更多的星星？” 直接找到文本中的答案可能很困难，因此将这个问题拆分为两个更具体的子查询会更有效：“LangChain在GitHub上有多少颗星？” 和“LlamaIndex在GitHub上有多少颗星？” 这些子查询可以并行执行，然后将检索到的上下文合并，以生成对初始查询的最终答案。LangChain通过<a href="https://python.langchain.com/v0.1/docs/modules/data_connection/retrievers/MultiQueryRetriever/?ref=blog.langchain.dev">多查询检索器</a>支持此功能，而LlamaIndex则通过<a href="https://docs.llamaindex.ai/en/stable/examples/query_engine/sub_question_query_engine/">子问题查询引擎</a>实现。</p>
+<p>另一种技术是“后退提示”，利用LLM生成一个更通用的查询，以获取广泛的上下文，随后再执行原始查询的检索。最后，将这两个检索到的上下文一并提供给LLM，以生成最终答案。可以在LangChain的<a href="https://github.com/langchain-ai/langchain/blob/master/cookbook/stepback-qa.ipynb?ref=blog.langchain.dev">实现中</a>找到相关示例。</p>
+<p>此外，还有“查询重写”，即利用LLM重新表述初始查询，以提高检索效率。LangChain和LlamaIndex都支持此功能，尽管在实现上有所不同，但LlamaIndex的解决方案在这方面表现更为强大。</p>
+<h2 id="5-聊天引擎">5. 聊天引擎</h2>
+<p>构建一个优秀的RAG系统，能够处理连续的查询和对话上下文，是至关重要的。就像LLM时代之前的经典聊天机器人一样，聊天引擎可以支持后续问题、引用先前对话中的内容或处理与对话上下文相关的用户指令。实现这一点的关键技术是查询压缩，将聊天上下文和用户查询一并考虑。</p>
+<p>常见的实现方式包括<a href="https://docs.llamaindex.ai/en/stable/examples/chat_engine/chat_engine_context/">ContextChatEngine</a>，它首先检索与用户查询相关的上下文，然后将其与聊天历史一起从内存缓冲区发送给LLM，以便LLM在生成下一个答案时能够理解前面的上下文。</p>
+<p>另一个更复杂的例子是<a href="https://docs.llamaindex.ai/en/stable/examples/chat_engine/chat_engine_condense_plus_context/">CondensePlusContextMode</a>，每次交互中，聊天历史记录和最后一条消息都会被压缩成一个新的查询，然后检索相关的上下文并与用户消息一起传递给LLM以生成答案。</p>
+<p>LlamaIndex还支持基于<a href="https://docs.llamaindex.ai/en/stable/examples/chat_engine/chat_engine_openai/">OpenAI代理的聊天引擎</a>，提供更灵活的聊天模式。LangChain也支持OpenAI功能的API。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/chat_engine_popular_types.png" alt="chat_engine_popular_types">
+
+</p>
+<p>此外，还有其他类型的聊天引擎，例如ReAct Agent，但详细内容将在第7节中的Agent部分介绍。</p>
+<h2 id="6-查询路由">6. 查询路由</h2>
+<p>查询路由是一个基于LLM的决策步骤，用于决定在面对用户查询时采取的下一步行动——通常包括生成摘要、在某些数据索引中进行搜索，或尝试多种不同的路由选项，然后将它们的输出合成为一个答案。</p>
+<p>查询路由器还可以选择适合用户查询的索引或数据存储。举例来说，您可能有多个数据源，如经典向量存储、图形数据库或关系数据库，或者您有一个索引层次结构——比如一个用于摘要的索引和另一个用于文档块的向量索引。</p>
+<p>定义查询路由器时需要设置它可以做出的决策。路由选项是通过LLM调用执行的，LLM会返回预定义格式的结果，用于将查询路由到合适的索引，或者在更复杂的情况下，路由到子链或其他代理，如下面的多文档代理方案所示。</p>
+<p>LlamaIndex和LangChain都支持查询路由器的功能。</p>
+<h2 id="7-rag的代理">7. RAG的代理</h2>
+<p>代理（由LangChain和LlamaIndex支持）几乎从第一个LLM API发布以来就存在了。代理的基本思想是赋予LLM推理能力，并为其提供一组工具和任务。这些工具可以是确定性函数、外部API，甚至是其他代理——这也是LangChain名字的由来。</p>
+<p>代理本身是一个庞大的主题，在RAG的概述中很难全面探讨，因此我们将集中讨论基于代理的多文档检索案例。值得一提的是，OpenAI最近发布了<a href="https://platform.openai.com/docs/assistants/overview">OpenAI助手</a>，这是一个新的代理平台，支持聊天历史记录、知识存储、文档上传界面以及<a href="https://platform.openai.com/docs/assistants/tools/function-calling">函数调用API</a>，该API允许将自然语言转换为外部工具或数据库查询的API调用。</p>
+<p>在LlamaIndex中，<a href="https://docs.llamaindex.ai/en/stable/examples/agent/openai_agent/">OpenAIAgent</a>类结合了高级逻辑、ChatEngine和QueryEngine类，提供了基于知识和上下文感知的聊天功能，并支持在一次对话中调用多个OpenAI函数，从而实现了智能代理行为。</p>
+<p>让我们来看一个<a href="https://docs.llamaindex.ai/en/stable/examples/agent/multi_document_agents/">多文档代理</a>的例子——这是一个复杂的设置，每个文档上都初始化了一个代理（OpenAIAgent），它能够执行文档摘要和经典的QA机制。顶级代理负责将查询路由到文档代理并进行最终答案的合成。</p>
+<p>每个文档代理都有两个工具：向量存储索引和摘要索引。根据查询路由，决定使用哪一个工具。对于顶级代理来说，所有文档代理都是工具。</p>
+<p>这种高级RAG架构的优点是能够比较不同文档及其摘要中描述的不同解决方案或实体，同时提供经典的单文档摘要和QA机制，涵盖了大多数文档集合的聊天用例。</p>
+<p>
+  <img src="/img/2024-08-10-LLMs_RAG_tech_details/multi_document_agents.png" alt="multi_document_agents">
+
+</p>
+<p>但这种复杂方案也有缺点，由于在代理内部与LLM多次往返，它的速度可能较慢。LLM调用通常是RAG管道中耗时最长的操作——而搜索已被设计为速度优化。因此，对于大型多文档存储，建议对该方案进行简化以提高可扩展性。</p>
+<h2 id="8-响应合成器">8. 响应合成器</h2>
+<p>响应合成器是RAG管道的最后一步——根据检索到的所有上下文和用户的初始查询生成最终答案。</p>
+<p>最简单的方法是将所有检索到的上下文（高于某个相关性阈值的）与查询一起一次性馈送给LLM生成答案。</p>
+<p>当然，还有更复杂的选项，例如多个LLM调用，用于细化检索到的上下文并生成更好的答案。主要方法包括：</p>
+<ol>
+<li>通过逐块向LLM发送检索到的上下文来迭代地细化答案。</li>
+<li>总结检索到的上下文以适应提示。</li>
+<li>根据不同的上下文块生成多个答案，然后将其连接或总结。</li>
+</ol>
+<h1 id="编码器和llm微调">编码器和LLM微调</h1>
+<p>在RAG管道中，可以对涉及的两个深度学习模型进行微调：一个是负责嵌入质量和上下文检索质量的Transformer编码器，另一个是负责根据提供的上下文生成最佳答案的LLM。值得注意的是，后者（LLM）通常具有出色的少样本学习能力。</p>
+<p>如今，使用如GPT-4这样的高端LLM可以生成高质量的合成数据集，这是一个很大的优势。然而，使用专业研究团队在大型数据集上训练的开源模型，并用小型合成数据集进行快速调整，可能会影响模型的整体能力。因此，在微调时需要权衡这一点。</p>
+<h2 id="编码器微调">编码器微调</h2>
+<p>我对微调编码器的效果持有一些怀疑，尤其是考虑到最新的专为搜索优化的Transformer编码器已经非常高效。为此，我在LlamaIndex的环境中测试了微调bge-large-en-v1.5（截至撰写本文时，该模型在MTEB排行榜中排名前四）的效果，结果显示检索质量仅提高了2%。虽然提升不大，但在处理狭窄领域的数据集时，这种微调选项可能会显得特别有用。</p>
+<h2 id="排序器微调">排序器微调</h2>
+<p>另一种经典的选择是使用交叉编码器对检索到的结果进行重新排序，尤其是在您对基础编码器的表现不完全信任的情况下。这种方法的工作原理是将查询和前k个检索到的文本块逐一传递给交叉编码器，使用SEP令牌分隔，然后对其进行微调，使其输出1表示相关块，输出0表示不相关块。相关研究表明，通过交叉编码器微调，成对得分可以提高约4%。</p>
+<h2 id="llm微调">LLM微调</h2>
+<p>最近，OpenAI开始提供LLM微调API，LlamaIndex也发布了一个关于在RAG设置中微调GPT-3.5-turbo的教程，以“提取”一些GPT-4的知识。这个方法的思路是，先获取一个文档，用GPT-3.5-turbo生成多个问题，然后使用GPT-4根据文档内容生成这些问题的答案，最终在这些问答对数据集上微调GPT-3.5-turbo。RAG评估框架ragas的数据显示，微调后的GPT-3.5-turbo模型在忠实度指标上提高了5%，即微调后的模型比原始模型更好地利用了提供的上下文来生成答案。</p>
+<p>Meta AI Research最近的一篇论文《RA-DIT：检索增强双指令调优》展示了一种更复杂的方法，提出了同时调优LLM和检索器（即双编码器）的方法，针对查询、上下文和答案进行三元组调优。有关实现的详细信息可以参阅原始指南。这项技术通过微调API和Llama2开源模型（在原始论文中）实现了OpenAI LLM的微调，结果在知识型任务上指标增加了约5%，在常识性推理任务上也提高了几个百分点。</p>
+<p>如果您对RAG的LLM微调有更好的方法，欢迎在评论部分分享您的专业知识，特别是针对较小的开源LLM的应用。</p>
+<h1 id="评价">评价</h1>
+<p>RAG系统性能的评估有多个框架，这些框架通常使用一些独立的指标，例如总体答案相关性、答案基础性、忠实性和检索到的上下文相关性。</p>
+<p>在上一节中提到的Ragas使用忠实性和答案相关性作为生成答案质量的指标，并使用经典的上下文精确度和召回率作为RAG方案检索部分的指标。</p>
+<p>在Andrew Ng、LlamaIndex和评估框架Truelens最近发布的《构建和评估高级RAG》短期课程中，提出了RAG三元组——即检索到的上下文与查询的相关性、基础性（LLM答案在多大程度上得到了提供上下文的支持）以及与查询的答案相关性。</p>
+<p>在RAG系统中，关键且最具可控性的指标是检索到的上下文相关性。本文前几部分（第1-7部分）以及编码器和排序器的微调部分，主要都是为了改进这一指标，而最后的第8部分和LLM微调则侧重于提升答案的相关性和基础性。</p>
+<p>这里提供了一个简单的检索器评估管道的例子，它可以应用于编码器微调部分。OpenAI的开发食谱展示了一种更高级的方法，不仅考虑了命中率，还包括常见的搜索引擎指标，如平均倒数排名，以及生成答案的指标，如忠实度和相关性。</p>
+<p>LangChain提供了一个非常先进的评估框架LangSmith，您可以在其中实现自定义评估器，并监控RAG管道内运行的所有跟踪，使您的系统更加透明。</p>
+<p>如果您使用LlamaIndex构建RAG系统，则可以使用rag_evaluator llama包，这是一款能够快速评估公共数据集的工具。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://loveAtCorner.github.io/"><img src="/img/favicon.png" />YuTian Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2024/08/07/LLMs_langchain_practice_agent/" data-toggle="tooltip" data-placement="top" title="langchain开发框架实践（二）">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/llms-agent" title="llms, agent">
+                            llms, agent
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/llms-dev_framework" title="llms, dev_framework">
+                            llms, dev_framework
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/llmsapi" title="llms,api">
+                            llms,api
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://caixiongjiang.github.io">caixiongjiang的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:leoyutian@yeah.net">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/loveAtCorner">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/tianyu271828">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="YuTian Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; YuTian Blog 2024
+                    
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>

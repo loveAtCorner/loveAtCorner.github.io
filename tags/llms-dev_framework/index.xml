@@ -6,13 +6,27 @@
     <description>Recent content in LLMs, Dev_framework on YuTian Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 10 Aug 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://loveAtCorner.github.io/tags/llms-dev_framework/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>langchain开发框架实践</title>
-      <link>https://loveAtCorner.github.io/2024/08/06/LLMs_langchain_practice/</link>
+      <title>RAG技术细节</title>
+      <link>https://loveAtCorner.github.io/2024/08/10/LLMs_RAG_tech_details/</link>
+      <pubDate>Sat, 10 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/08/10/LLMs_RAG_tech_details/</guid>
+      <description>本文概述和解释可用的 RAG 算法和技术，并未深入研究代码中的实现细节 简介 检索增强生成（RAG）是一种结合了信息检索与大语言模型（LLM）的技术，通</description>
+    </item>
+    <item>
+      <title>langchain开发框架实践（二）</title>
+      <link>https://loveAtCorner.github.io/2024/08/07/LLMs_langchain_practice_agent/</link>
+      <pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>https://loveAtCorner.github.io/2024/08/07/LLMs_langchain_practice_agent/</guid>
+      <description>4、模块 Agent 对于agent的使用，这里将结合一个具体的场景进行讲解 我门现在有这么一个场景，需要统计英文单词的字数，但是我们不希望统计工作由大模</description>
+    </item>
+    <item>
+      <title>langchain开发框架实践（一）</title>
+      <link>https://loveAtCorner.github.io/2024/08/06/LLMs_langchain_practice_chain/</link>
       <pubDate>Tue, 06 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>https://loveAtCorner.github.io/2024/08/06/LLMs_langchain_practice/</guid>
+      <guid>https://loveAtCorner.github.io/2024/08/06/LLMs_langchain_practice_chain/</guid>
       <description>1、langchain是什么 LangChain是一个基于LLM开发应用程序的框架，把调用LLM的过程组成一条链的形式，具体要执行哪些函数是由</description>
     </item>
   </channel>
