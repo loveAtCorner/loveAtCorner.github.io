@@ -222,8 +222,8 @@
 <p>LLM App的架构，究其本质，是生物性的发展过程和整体类比的结果，将LLM进行类脑比较，定位为整体中枢，进行分工合作。</p>
 <h2 id="第一部分planning">第一部分：Planning</h2>
 <p>一项复杂任务通常会包含很多步骤，Agent需要了解这些步骤是什么并提前规划。</p>
-<p><strong>任务拆解</strong>：
-Chain of thought (CoT; Wei et al. 2022) 已经成为一种标准的Prompting技术，用于提高模型在复杂任务中的性能。模型被要求“think step by step”利用更多的时间进行计算，将艰难的任务分解成更小，更简单的步骤。CoT将大型任务转化为多个可管理的任务，并对模型的思维过程进行了阐释。</p>
+<h4 id="任务拆解">任务拆解：</h4>
+<p>Chain of thought (CoT; Wei et al. 2022) 已经成为一种标准的Prompting技术，用于提高模型在复杂任务中的性能。模型被要求“think step by step”利用更多的时间进行计算，将艰难的任务分解成更小，更简单的步骤。CoT将大型任务转化为多个可管理的任务，并对模型的思维过程进行了阐释。</p>
 <p>Tree of Thoughts  (Yao et al. 2023) 进一步扩展CoT，在每一步都探索多种推理的可能性。它首先将问题分解为多个思考步骤，并在每个步骤中生成多个思考，从而创造一个树形结构。搜索过程可以是BFS(广度优先搜索）或DFS（深度优先搜索），每个状态由分类器（通过一个prompt）或少数服从多数的投票原则来决定。</p>
 <p>任务分解可通过以下几种方式实现：</p>
 <ul>
@@ -239,8 +239,8 @@ Chain of thought (CoT; Wei et al. 2022) 已经成为一种标准的Prompting技�
 <p>无论是CoT还是ToT，本质上是通过Prompt的精心设计，激发出模型原有的Metacognition
 只是如何通过某条神经元的线索能更加精准的调动出大脑中最擅长Planning的部分</p>
 <p>另一种截然不同的方式，LLM+P (Liu et al. 2023)，通过借助一个外部的经典Planner来进行一个更加长序列的整体规划。这种方法利用规划域定义语言（Planning Domain Definition Language, PDDL）作为中间接口来描述规划问题。整个使用过程，首先LLM将问题翻译成“问题PDDL”，接着请求经典Planner根据现有的“领域PDDL”生成一个PDDL Plan，最后将PDDL计划翻译回自然语言（LLM做的）。根本上讲，Planning Step是外包给外部工具的，当然也有一个前提：需要有特定领域的PDDL和合适的Planner。</p>
-<p><strong>模型自我反省</strong>:
-Self-reflection是非常重要的一环，它允许Agent通过完善过去的行动决策和纠正以前的错误来不断改进。现实世界中的任务中，试错仍然是无法避免的，自我反思在其中发挥着至关重要的作用。</p>
+<h4 id="模型自我反省">模型自我反省:</h4>
+<p>Self-reflection是非常重要的一环，它允许Agent通过完善过去的行动决策和纠正以前的错误来不断改进。现实世界中的任务中，试错仍然是无法避免的，自我反思在其中发挥着至关重要的作用。</p>
 <p><strong>ReAct</strong> (Yao et al. 2023)即Reson+Act通过将Action Space扩展为特定任务的离散动作和语言空间的组合，在LLM内部整合了推理（Reasoning）和行动（Action）。前者使LLM能够与环境交互（例如，使用Wikipedia Search的 API），后者通过提示词使得LLM用自然语言生成整体的推理过程。</p>
 <p>ReAct提示词模板包含了提供LLM思考的明确步骤，其大致格式为：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>Thought: ...
@@ -290,11 +290,13 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 <p><strong>最大内部产品搜索</strong>（Maximum Inner Product Search，MIPS）
 通过使用外部存储器可以缓解关注范围有限的限制。一种标准的做法是将信息的嵌入表示法保存到向量数据库中，该数据库能够支持快速的最大内积搜索（MIPS）。为了优化检索速度，常见的选择是近似相邻（Approximate Nearest Neighbors，ANN）算法，返回近似的top k个近邻，用损失少量的精度来换取速度的巨大提升。</p>
 <p>几种常见的ANN算法选择进行快速MIPS</p>
-<p>LSH (Locality-Sensitive Hashing，局部敏感的哈希算法)：它引入了一种哈希函数，这种哈希函数能够最大限度地将相似的输入项映射到同一个桶中，其中桶的数量要远小于输入内容的数量。</p>
-<p>ANNOY (Approximate Nearest Neighbors Oh Yeah)：核心数据结构是随机投影树,它是一个二叉树集合,每个非叶子节点表示将输入空间划分为两半的一个超平面,每个叶子节点存储一个数据点。这些树是独立随机构建的,在某种程度上,它模拟了一个哈希函数的作用。ANNOY 的搜索发生在所有树中,迭代地搜索最接近查询的那一半,然后聚合结果。其思想与 KD 树非常相关,但是可扩展性更强。</p>
-<p>HNSW (Hierarchical Navigable Small World)：HNSW的设计思想来源于小世界网络，在小世界网络中，每个节点只需要通过很少的步数就可以连接到任何其他节点。比如社交网络中的“六度分隔”理论。HNSW构建了多层的小世界网络结构,底层包含实际的数据点。中间层创建了一些“快捷键”来加速搜索过程。在进行搜索时，HNSW从顶层的一个随机节点开始，逐步导航向目标节点移动。如果在一层无法接近目标，它就会下降到下一层，直到到达底层。在上层每一步导航都能潜在地跨越数据空间中的大距离,而在下层每一步导航可以提高搜索的质量。</p>
-<p>FAISS (Facebook AI Similarity Search)：它基于这样一个假设,即在高维空间中,节点之间的距离遵循高斯分布,因此应该存在数据聚类。FAISS通过向量量化来实现,先将向量空间划分为若干集群,然后在每个集群内进行更精细的量化。在搜索时,首先使用粗粒度的量化查找可能的集群候选,然后在每个候选集群内使用更细致的量化进行进一步查找。</p>
-<p>ScaNN (Scalable Nearest Neighbors)：ScaNN算法的主要创新在于使用了各向异性向量量化。他对数据点到进行向量化，使得内积&lt;q,&gt;尽可能与∠q和的原始距离相似，而不是选择最接近的量化质心点。</p>
+<ul>
+<li>LSH (Locality-Sensitive Hashing，局部敏感的哈希算法)：它引入了一种哈希函数，这种哈希函数能够最大限度地将相似的输入项映射到同一个桶中，其中桶的数量要远小于输入内容的数量。</li>
+<li>ANNOY (Approximate Nearest Neighbors Oh Yeah)：核心数据结构是随机投影树,它是一个二叉树集合,每个非叶子节点表示将输入空间划分为两半的一个超平面,每个叶子节点存储一个数据点。这些树是独立随机构建的,在某种程度上,它模拟了一个哈希函数的作用。ANNOY 的搜索发生在所有树中,迭代地搜索最接近查询的那一半,然后聚合结果。其思想与 KD 树非常相关,但是可扩展性更强。</li>
+<li>HNSW (Hierarchical Navigable Small World)：HNSW的设计思想来源于小世界网络，在小世界网络中，每个节点只需要通过很少的步数就可以连接到任何其他节点。比如社交网络中的“六度分隔”理论。HNSW构建了多层的小世界网络结构,底层包含实际的数据点。中间层创建了一些“快捷键”来加速搜索过程。在进行搜索时，HNSW从顶层的一个随机节点开始，逐步导航向目标节点移动。如果在一层无法接近目标，它就会下降到下一层，直到到达底层。在上层每一步导航都能潜在地跨越数据空间中的大距离,而在下层每一步导航可以提高搜索的质量。</li>
+<li>FAISS (Facebook AI Similarity Search)：它基于这样一个假设,即在高维空间中,节点之间的距离遵循高斯分布,因此应该存在数据聚类。FAISS通过向量量化来实现,先将向量空间划分为若干集群,然后在每个集群内进行更精细的量化。在搜索时,首先使用粗粒度的量化查找可能的集群候选,然后在每个候选集群内使用更细致的量化进行进一步查找。</li>
+<li>ScaNN (Scalable Nearest Neighbors)：ScaNN算法的主要创新在于使用了各向异性向量量化。他对数据点到进行向量化，使得内积&lt;q,&gt;尽可能与∠q和的原始距离相似，而不是选择最接近的量化质心点。</li>
+</ul>
 <p>
   <img src="/img/2024-08-04-LLMs_agents_tech_detail/MIPS_algorithm_comparison.png" alt="检索算法召回性能对比">
 
@@ -304,15 +306,9 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 当然都是因为没有无限的上下文学习</p>
 <h2 id="第三部分tool-use">第三部分：Tool Use</h2>
 <p>使用工具是人类的一个显著特点，我们创造、修改和利用外部物体来完成超越我们身体和认知极限的事情。为LLM配备外部工具可以大大扩展模型的功能。</p>
-<p>
-  <img src="/img/2024-08-04-LLMs_agents_tech_detail/tool_classification.png" alt="工具分类">
-
-</p>
-<p>确定性工具-API工具-专家模型-物理世界工具</p>
-<p>让语言模型只做语言模型该做的事儿，通过文字生成内容传递逻辑。</p>
-<p>借助各式各样的工具完成逻辑的执行</p>
-<p>使用工具的方法：
-<strong>MRKL</strong> (Karpas et al. 2022)，是 &ldquo;模块化推理、知识和语言 &ldquo;（Modular Reasoning,Knowledge and Language)的简称，是一种用于自主代理的神经符号架构。建议 MRKL 系统包含一系列 &ldquo;专家 &ldquo;模块，而通用 LLM 则充当路由器，将查询路由到最合适的专家模块。这些模块可以是神经模块（如深度学习模型），也可以是符号模块（如数学计算器、货币转换器、天气 API）。</p>
+<p>让语言模型只做语言模型该做的事儿，通过文字生成内容传递逻辑，借助各式各样的工具完成逻辑的执行。</p>
+<h4 id="使用工具的方法">使用工具的方法：</h4>
+<p><strong>MRKL</strong> (Karpas et al. 2022)，是 &ldquo;模块化推理、知识和语言 &ldquo;（Modular Reasoning,Knowledge and Language)的简称，是一种用于自主代理的神经符号架构。建议 MRKL 系统包含一系列 &ldquo;专家 &ldquo;模块，而通用 LLM 则充当路由器，将查询路由到最合适的专家模块。这些模块可以是神经模块（如深度学习模型），也可以是符号模块（如数学计算器、货币转换器、天气 API）。</p>
 <p>他们用算术作为测试案例，做了一个微调 LLM 以调用计算器的实验。他们的实验表明，由于 LLM（7B  Jurassic1-large 模型）无法可靠地提取基本算术的正确论据，因此解决口算数学问题比解决明确表述的数学问题更难。这些结果突出表明，当外部符号工具能够可靠地发挥作用时，了解何时以及如何使用这些工具至关重要，这取决于 LLM 的能力。</p>
 <p><strong>TALM</strong> (工具增强型语言模型Tool Augmented Language Models; Parisi et al. 2022)和Toolformer (Schick et al. 2023)都做了微调LM，学习使用外部工具。数据集的扩展与否取决于新添加的API调用注释能否提高模型输出的质量。更多详情，参阅Prompt Engineering的 “External APIs” section。</p>
 <p>ChatGPT Plugins 和 OpenAI API 函数调用就是增强了工具使用能力的 LLM 在实践中发挥作用的良好范例。工具应用程序接口集合可以由其他开发人员提供（如插件）或自行定义（如函数调用）。</p>
@@ -332,8 +328,8 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 <li>b.它依赖于较长的上下文窗口来交流复杂的任务内容；</li>
 <li>c.提高 LLM 输出和外部模型服务的稳定性。</li>
 </ul>
-<p><strong>模型评估</strong>：
-<strong>API-Bank</strong> (Li et al. 2023) 是评估工具增强型LLMs性能的基准。它包含了53个常用的API工具，一个完整的工具增强型LLM的工作流，以及264个注释对话其中涉及了568个API的调用。可供选择的 API 种类繁多，包括搜索引擎、计算器、日历查询、智能家居控制、日程管理、健康数据管理、账户认证工作流程等。由于有大量的 API，LLM 首先可以访问 API 搜索引擎，找到要调用的正确 API，然后使用相应的文档进行调用。</p>
+<h4 id="评估模型使用工具的能力">评估模型使用工具的能力</h4>
+<p><strong>API-Bank</strong> (Li et al. 2023) 是评估工具增强型LLMs性能的基准。它包含了53个常用的API工具，一个完整的工具增强型LLM的工作流，以及264个注释对话其中涉及了568个API的调用。可供选择的 API 种类繁多，包括搜索引擎、计算器、日历查询、智能家居控制、日程管理、健康数据管理、账户认证工作流程等。由于有大量的 API，LLM 首先可以访问 API 搜索引擎，找到要调用的正确 API，然后使用相应的文档进行调用。</p>
 <p>
   <img src="/img/2024-08-04-LLMs_agents_tech_detail/evaluation_algorithm.png" alt="LLM 如何在 API-Bank 中调用 API 的伪代码">
 
@@ -364,10 +360,12 @@ Self-reflection是非常重要的一环，它允许Agent通过完善过去的行
 
 基于LLM的Automous Agent 发展趋势</p>
 <p>自ChatGPT爆火以来Agent相关领域的研究蓬勃发展，目前Agent方向的相关论文已累计高达160篇。其中的Agent根据其各自的能力共分为四类：</p>
-<p>Tool Agent（工具Agent）：利用各种外部工具（如搜索引擎，知识库等）来辅助完成任务，代表论文有WebGPT、Toolformer等</p>
-<p>Simulation Agent（仿真Agent）：用于构建仿真环境，通常包含多个代理用于多角色互动、对话等。代表论文有Social Simulacra、Generative Agents等</p>
-<p>General Agent（通用代理）：追求通用性，可应用于多领域任务。代表论文有AutoGPT、LangChain等</p>
-<p>Domain Agent（领域Agent）：针对特定领域或任务进行优化设计。代表论文有ChemCrow（化学），ChatDev（软件开发）等</p>
+<ul>
+<li>Tool Agent（工具Agent）：利用各种外部工具（如搜索引擎，知识库等）来辅助完成任务，代表论文有WebGPT、Toolformer等</li>
+<li>Simulation Agent（仿真Agent）：用于构建仿真环境，通常包含多个代理用于多角色互动、对话等。代表论文有Social Simulacra、Generative Agents等</li>
+<li>General Agent（通用代理）：追求通用性，可应用于多领域任务。代表论文有AutoGPT、LangChain等</li>
+<li>Domain Agent（领域Agent）：针对特定领域或任务进行优化设计。代表论文有ChemCrow（化学），ChatDev（软件开发）等</li>
+</ul>
 
 
                 
